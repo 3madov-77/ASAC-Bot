@@ -4,6 +4,7 @@ const Discord = require('discord.js');
 require('dotenv').config();
 
 const command = require('./models/command');
+const createChannel = require('./models/create-channel');
 
 const token = process.env.TOKEN;
 const client = new Discord.Client();
@@ -13,6 +14,10 @@ client.on('ready', () => {
 
   command(client, 'ping', (msg) => {
     msg.channel.send('Pong');
+  });
+
+  command(client, 'cc', (msg) => {
+    createChannel(msg,'test','856960018239062076');
   });
   
   client.user.setPresence({
