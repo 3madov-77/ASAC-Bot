@@ -14,6 +14,13 @@ client.on('ready', () => {
   command(client, 'ping', (msg) => {
     msg.channel.send('Pong');
   });
+  
+  client.user.setPresence({
+    activity: {
+      name: 'developed by Abduhalkim Zatar',
+      type: 0,
+    },
+  });
 });
 
 client.login(token);
