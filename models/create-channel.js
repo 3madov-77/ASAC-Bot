@@ -1,8 +1,8 @@
 'use strict';
 
-module.exports = (message,name,categoryID) => {
-  message.guild.channels.create(name,{type:'voice'}).then((channel)=>{
+module.exports = (client,name,categoryID) => {
+  client.channels.create(name,{type:'text'}).then((channel)=>{
     channel.setParent(categoryID);
-    channel.setUserLimit(5);
+    // channel.setUserLimit(5);
   });
 };
