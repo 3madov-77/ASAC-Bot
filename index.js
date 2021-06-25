@@ -17,10 +17,6 @@ client.on('ready', () => {
   console.log('ready');
 
 
-  command(client, 'ping', (msg) => {
-    msg.channel.send('Pong');
-  });
-
   command(client, 'cc', (msg) => {
     createChannel(msg, 'test', '856960018239062076');
   });
@@ -29,7 +25,7 @@ client.on('ready', () => {
     embed(msg);
   });
 
-  // createPanel(client)
+  // createPanel(client);
   createTicket(client);
 
   client.user.setPresence({
