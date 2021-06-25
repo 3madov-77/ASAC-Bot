@@ -22,7 +22,7 @@ client.on('ready', () => {
   });
 
   createPanel(client);
-  // createTicket(client);
+  createTicket(client);
 
   client.user.setPresence({
     activity: {
