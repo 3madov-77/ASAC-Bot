@@ -21,7 +21,7 @@ client.on('ready', () => {
     createChannel(msg, 'test', '856960018239062076');
   });
 
-  createPanel(client);
+  // createPanel(client);
   createTicket(client);
 
   client.user.setPresence({
