@@ -19,7 +19,6 @@ const updateTickets = (newClaimedTickets) => {
 };
 
 const checkClaim = (channelID) => {
-  getTickets();
   let flag = false;
   let claimerID;
   claimedTickets.forEach((ticket) => {
@@ -28,27 +27,56 @@ const checkClaim = (channelID) => {
       claimerID = ticket.claimerID;
     }
   });
-  return flag ? { flag, claimerID } : flag;
+  return flag ? claimerID : false;
 };
 
 const claimTicket = (channelID, claimerID) => {
-  claimedTickets.push(channelID, claimerID);
+  claimedTickets.push({ channelID, claimerID });
   updateTickets(claimedTickets);
 };
 
+const unClaimTicket = (channelID) => {
+  claimedTickets = claimedTickets.filter((ticket) => ticket.channelID !== channelID);
+  updateTickets(claimedTickets);
+};
 
-
-module.exports = async (button, row, type) => {
-  getTickets  ();
-  const roles = button.clicker.member._roles;
-  if (type === 'claim' && (roles.includes(taRole) || roles.includes(instRole))) {
-    console.log('?');
-    // claimTicket(button.channel.id, button.clicker.id);
-  }
-  // button.message.content, { embed, component: row }
+const claimingMessage = async (button, row, type) => {
   const embedClaim = new Discord.MessageEmbed().setDescription(`Ticket ${type}ed by <@${button.clicker.user.id}>`).setColor(type === 'claim' ? '#4CAF50' : '#f44336');
   button.channel.send(embedClaim);
   const embed = new Discord.MessageEmbed().setDescription(`Support will be with you shortly.
   To close this ticket click on 🔒`).setTitle('ASAC Tickets System').setFooter('by Abdulhakim Zatar').setColor('#b006c6');
   await button.message.edit(button.message.content, { embed, component: row });
+};
+
+const unsupport = (button) => {
+  const notSupport = new Discord.MessageEmbed().setDescription(`You can't claim/unclaim the ticket <@${button.clicker.user.id}>`).setColor('#f44336');
+  button.channel.send(notSupport);
+  return;
+};
+
+
+
+module.exports = async (button, row, type) => {
+  const roles = button.clicker.member._roles;
+  // if ((!roles.includes(taRole) || !roles.includes(instRole))) {
+    
+  // }
+
+  getTickets();
+  if (type === 'claim' && !checkClaim(button.channel.id)) {
+    claimTicket(button.channel.id, button.clicker.user.id);
+    claimingMessage(button, row, type);
+  }
+
+  if (type === 'unclaim' && checkClaim(button.channel.id)) {
+    const claimer = checkClaim(button.channel.id);
+    if (claimer !== button.clicker.user.id) {
+      const notSupport = new Discord.MessageEmbed().setDescription(`Ticket already claimed by <@${claimer}>`).setColor('#f44336');
+      button.channel.send(notSupport);
+      return;
+    }
+    unClaimTicket(button.channel.id);
+    claimingMessage(button, row, type);
+  }
+  // button.message.content, { embed, component: row }
 };
