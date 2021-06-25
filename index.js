@@ -30,7 +30,7 @@ client.on('ready', () => {
 
   client.user.setPresence({
     activity: {
-      name: 'developed by Abduhalkim Zatar',
+      name: 'developed by Abdulhakim Zatar',
       type: 0,
     },
   });
