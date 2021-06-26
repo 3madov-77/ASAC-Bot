@@ -11,6 +11,7 @@ require('dotenv').config();
 const GUILD = process.env.GUILD;
 const TA_ROLE = process.env.TA_ROLE;
 const CLOSED = process.env.CLOSED;
+const SAVED = process.env.SAVED;
 const QUEUE = process.env.QUEUE;
 const ticketsIDs = ['201', '301', '401js', '401py', '401java'];
 
@@ -111,12 +112,16 @@ One of our TAs will join you as soon as possible.`, { embed, component: row1 });
           setTimeout(async () => {
             const embed = new Discord.MessageEmbed().setDescription(`The ticket is closed, you can delete or save it`).setColor('#ffc107');
             await button.channel.send({ embed, component: row3 });
-          }, 3000);
+          }, 1000);
         }, 2000);
       }
 
       if (button.id === 'delete') {
         button.channel.delete();
+      }
+
+      if (button.id === 'save') {
+        button.channel.setParent(SAVED);
       }
     } catch (err) {
       // console.log(err.message);

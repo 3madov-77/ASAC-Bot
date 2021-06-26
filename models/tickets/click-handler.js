@@ -81,7 +81,6 @@ module.exports = async (button, row, type) => {
     // await button.channel.lockPermissions();
 
 
-    console.log('123', button.channel.id);
     setTimeout(() => {
       button.channel.setParent(CLAIMED);
       button.channel.overwritePermissions(permissions);
@@ -103,7 +102,6 @@ module.exports = async (button, row, type) => {
     //  button.channel.setName(name);
     unClaimTicket(button.channel.id);
     claimingMessage(button, row, type);
-    console.log('321', button.channel.id);
     setTimeout(() => {
       button.channel.setParent(QUEUE);
       button.channel.overwritePermissions(permissions);
