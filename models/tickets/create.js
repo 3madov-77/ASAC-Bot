@@ -87,7 +87,7 @@ Please write a description of your problem then do the following:
  - Join ":hourglass:Waiting for Help:hourglass:".
  - Wait until one of the TAs move you to the breakout room.
       
-One of our TAs will join you as soon as possible.`, { embed, component: row1 });
+One of our <@&856605767583137793> will join you as soon as possible.`, { embed, component: row1 });
         // await button.clicker.fetch();
         // console.log(button.clicker);
         setTimeout(async () => {
