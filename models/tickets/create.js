@@ -9,11 +9,11 @@ const clickHandler = require('./click-handler');
 require('dotenv').config();
 // const TICKETS_ROOM = process.env.TICKETS_ROOM;
 const GUILD = process.env.GUILD;
-const TA_ROLE = process.env.TA_ROLE;
 const CLOSED = process.env.CLOSED;
 const SAVED = process.env.SAVED;
 const QUEUE = process.env.QUEUE;
 const ticketsIDs = ['201', '301', '401js', '401py', '401java'];
+const taRole = process.env.TA_ROLE;
 
 
 module.exports = async (client) => {
@@ -60,10 +60,16 @@ module.exports = async (client) => {
         .addComponent(save);
 
 
-
       if (ticketsIDs.includes(button.id)) {
         await button.clicker.fetch();
+        const roles = button.clicker.member._roles;
         const nickname = await getNickname(client, button.clicker.user);
+        if ((roles.includes(taRole))) {
+          const embed = new Discord.MessageEmbed().setDescription(`TAs can't create tickets.`).setTitle('ASAC Tickets System').setColor('#ffc107');
+          console.log(nickname,'tried to create ticket');
+          button.clicker.user.send(embed);
+          return;
+        }
         let guild = await client.guilds.fetch(GUILD);
         // await createChannel(guild, `📗test📗`, '856836553623863307');
         const channel = await createChannel(guild, `${button.id}-${nickname}`, QUEUE, button.clicker.user.id);
