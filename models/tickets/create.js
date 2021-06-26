@@ -104,6 +104,8 @@ One of our TAs will join you as soon as possible.`, { embed, component: row1 });
 
       if (button.id === 'close') {
         await button.clicker.fetch();
+        const oldEmbed = new Discord.MessageEmbed().setDescription(`Support will be with you shortly.`).setTitle('ASAC Tickets System').setFooter('by Abdulhakim Zatar').setColor('#b006c6');
+        button.message.edit(button.message.content, { oldEmbed, component: null });
         const embed = new Discord.MessageEmbed().setDescription(`Ticket closed by <@${button.clicker.user.id}>`).setColor('#f44336');
         await button.channel.send(embed);
         setTimeout(async () => {

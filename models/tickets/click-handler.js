@@ -6,7 +6,7 @@ const taRole = process.env.TA_ROLE;
 const instRole = process.env.INST_ROLE;
 const QUEUE = process.env.QUEUE;
 const CLAIMED = process.env.CLAIMED;
-
+const points = require('../points');
 let claimedTickets = [];
 
 const getTickets = () => {
@@ -77,6 +77,7 @@ module.exports = async (button, row, type) => {
     //  button.channel.setName(name);
     claimTicket(button.channel.id, button.clicker.user.id);
     claimingMessage(button, row, type);
+    points.addPoint(button.clicker.user.id);
     // await button.channel.fetch();
     // await button.channel.lockPermissions();
 
@@ -102,6 +103,7 @@ module.exports = async (button, row, type) => {
     //  button.channel.setName(name);
     unClaimTicket(button.channel.id);
     claimingMessage(button, row, type);
+    points.removePoint(button.clicker.user.id);
     setTimeout(() => {
       button.channel.setParent(QUEUE);
       button.channel.overwritePermissions(permissions);
