@@ -58,9 +58,10 @@ const unsupport = (button) => {
 
 module.exports = async (button, row, type) => {
   const roles = button.clicker.member._roles;
-  // if ((!roles.includes(taRole) || !roles.includes(instRole))) {
-    
-  // }
+  if ((!roles.includes(taRole) && !roles.includes(instRole))) {
+    unsupport();
+    return;
+  }
 
   getTickets();
   if (type === 'claim' && !checkClaim(button.channel.id)) {
@@ -71,12 +72,11 @@ module.exports = async (button, row, type) => {
   if (type === 'unclaim' && checkClaim(button.channel.id)) {
     const claimer = checkClaim(button.channel.id);
     if (claimer !== button.clicker.user.id) {
-      const notSupport = new Discord.MessageEmbed().setDescription(`Ticket already claimed by <@${claimer}>`).setColor('#f44336');
+      const notSupport = new Discord.MessageEmbed().setDescription(`Ticket already claimed <@${button.clicker.user.id}>`).setColor('#f44336');
       button.channel.send(notSupport);
       return;
     }
     unClaimTicket(button.channel.id);
     claimingMessage(button, row, type);
   }
-  // button.message.content, { embed, component: row }
 };
