@@ -67,6 +67,11 @@ module.exports = async (button, row, type) => {
     return;
   }
 
+  if(type === 'delete'){
+    unClaimTicket(button.channel.id);
+    button.channel.delete();
+  }
+
   getTickets();
   if (type === 'claim' && !checkClaim(button.channel.id)) {
     const permissions = button.channel.permissionOverwrites;

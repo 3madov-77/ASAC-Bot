@@ -66,7 +66,7 @@ module.exports = async (client) => {
         const nickname = await getNickname(client, button.clicker.user);
         if ((roles.includes(taRole))) {
           const embed = new Discord.MessageEmbed().setDescription(`TAs can't create tickets.`).setTitle('ASAC Tickets System').setColor('#ffc107');
-          console.log(nickname,'tried to create ticket');
+          console.log(nickname, 'tried to create ticket');
           button.clicker.user.send(embed);
           return;
         }
@@ -108,6 +108,10 @@ One of our TAs will join you as soon as possible.`, { embed, component: row1 });
         clickHandler(button, row1, button.id);
       }
 
+      if (button.id === 'delete') {
+        clickHandler(button, null, button.id);
+      }
+
       if (button.id === 'close') {
         await button.clicker.fetch();
         const oldEmbed = new Discord.MessageEmbed().setDescription(`Support will be with you shortly.`).setTitle('ASAC Tickets System').setFooter('by Abdulhakim Zatar').setColor('#b006c6');
@@ -123,9 +127,7 @@ One of our TAs will join you as soon as possible.`, { embed, component: row1 });
         }, 2000);
       }
 
-      if (button.id === 'delete') {
-        button.channel.delete();
-      }
+
 
       if (button.id === 'save') {
         button.channel.setParent(SAVED);
