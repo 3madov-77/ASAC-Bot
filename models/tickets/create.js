@@ -72,8 +72,7 @@ module.exports = async (client) => {
           VIEW_CHANNEL: true,
         });
         // console.log(channel);
-        const embed = new Discord.MessageEmbed().setDescription(`Support will be with you shortly.
-      To close this ticket click on 🔒`).setTitle('ASAC Tickets System').setFooter('by Abdulhakim Zatar').setColor('#b006c6');
+        const embed = new Discord.MessageEmbed().setDescription(`Support will be with you shortly.`).setTitle('ASAC Tickets System').setFooter('by Abdulhakim Zatar').setColor('#b006c6');
         await channel.send(`<@${button.clicker.user.id}> Welcome,
 
 How can we help you?

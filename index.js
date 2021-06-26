@@ -18,8 +18,7 @@ client.on('ready', async() => {
 
   console.log('ready');
   await mongo();
-  console.log(await points.getPoints('223894785218445313'));
-
+  // console.log(await points.all('223894785218445314'));
   command(client, 'cc', (msg) => {
     createChannel(msg, 'test', '856960018239062076');
   });

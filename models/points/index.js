@@ -1,25 +1,43 @@
 'use strict';
 const mongo = require('./schema.js');
-class Points{
-  async getPoints(id){
-    const points = await mongo.find({userId:id});
-    return points[0]; 
+class Points {
+  async getPoints(userId) {
+    let result = await mongo.findOne({ userId });
+
+    if (result) {
+      return result.points;
+    } else {
+      await new mongo({ userId }).save();
+      return 0;
+    }
   }
 
-  async addPoints(id){
-
+  async addPoint(userId) {
+    return await mongo.findOneAndUpdate({ userId }, {
+      userId,
+      $inc: {
+        points: 1,
+      },
+      last: Date.now(),
+    }, { upsert: true, new: true });
   }
 
-  async removePoints(id){
-
+  async removePoint(userId) {
+    return await mongo.findOneAndUpdate({ userId }, {
+      userId,
+      $inc: {
+        points: -1,
+      },
+      last: Date.now(),
+    }, { upsert: true, new: true });
   }
 
-  async topPoints(){
-
+  async topPoints() {
+    return await mongo.find({}).sort({ points: -1 }).limit(10);
   }
 
-  async all(){
-
+  async all() {
+    return await mongo.find({}).sort({ points: -1 });
   }
 }
 
