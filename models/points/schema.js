@@ -1,5 +1,5 @@
 'use strict';
-const mongoose = require('moongoose');
+const mongoose = require('mongoose');
 
 module.exports = mongoose.model('point', mongoose.Schema({
   userId: { type: String, required: true },
