@@ -4,6 +4,8 @@ const fs = require('fs');
 require('dotenv').config();
 const taRole = process.env.TA_ROLE;
 const instRole = process.env.INST_ROLE;
+const QUEUE = process.env.QUEUE;
+const CLAIMED = process.env.CLAIMED;
 
 let claimedTickets = [];
 
@@ -48,7 +50,7 @@ const claimingMessage = async (button, row, type) => {
   await button.message.edit(button.message.content, { embed, component: row });
 };
 
-const unsupport = (button) => {
+const unsupport = async (button) => {
   const notSupport = new Discord.MessageEmbed().setDescription(`You can't claim/unclaim the ticket <@${button.clicker.user.id}>`).setColor('#f44336');
   button.channel.send(notSupport);
   return;
@@ -57,9 +59,11 @@ const unsupport = (button) => {
 
 
 module.exports = async (button, row, type) => {
+  await button.clicker.fetch();
+  button.channel.fetch();
   const roles = button.clicker.member._roles;
   if ((!roles.includes(taRole) && !roles.includes(instRole))) {
-    unsupport();
+    unsupport(button);
     return;
   }
 
@@ -67,6 +71,17 @@ module.exports = async (button, row, type) => {
   if (type === 'claim' && !checkClaim(button.channel.id)) {
     claimTicket(button.channel.id, button.clicker.user.id);
     claimingMessage(button, row, type);
+    // await button.channel.fetch();
+    // await button.channel.lockPermissions();
+    const permissions = button.channel.permissionOverwrites;
+    await button.channel.setParent(CLAIMED);
+    await button.channel.overwritePermissions(permissions);
+    // console.log(button.channel.permissionOverwrites);
+    // await button.channel.updateOverwrite(button.channel.permissionOverwrites);
+    // button.channel.updateOverwrite(button.clicker.user, {
+    //   SEND_MESSAGES: true,
+    //   VIEW_CHANNEL: true,
+    // });
   }
 
   if (type === 'unclaim' && checkClaim(button.channel.id)) {
@@ -78,5 +93,6 @@ module.exports = async (button, row, type) => {
     }
     unClaimTicket(button.channel.id);
     claimingMessage(button, row, type);
+    button.channel.setParent(QUEUE);
   }
 };
