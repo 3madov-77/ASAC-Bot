@@ -37,6 +37,16 @@ module.exports = async (client) => {
         .setEmoji('📌')
         .setStyle('gray')
         .setID('unclaim');
+      let deleteBtn = new MessageButton()
+        .setLabel('Delete')
+        .setEmoji('🗑️')
+        .setStyle('red')
+        .setID('delete');
+      let save = new MessageButton()
+        .setLabel('Save')
+        .setEmoji('💾')
+        .setStyle('blurple')
+        .setID('save');
 
       let row1 = new MessageActionRow()
         .addComponent(close)
@@ -44,6 +54,9 @@ module.exports = async (client) => {
       let row2 = new MessageActionRow()
         .addComponent(close)
         .addComponent(unclaim);
+      let row3 = new MessageActionRow()
+        .addComponent(deleteBtn)
+        .addComponent(save);
 
 
 
@@ -52,7 +65,7 @@ module.exports = async (client) => {
         const nickname = await getNickname(client, button.clicker.user);
         let guild = await client.guilds.fetch(GUILD);
         // await createChannel(guild, `📗test📗`, '856836553623863307');
-        const channel = await createChannel(guild, `📗${button.id}-${nickname}📗`, QUEUE, button.clicker.user.id);
+        const channel = await createChannel(guild, `${button.id}-${nickname}`, QUEUE, button.clicker.user.id);
         channel.updateOverwrite(button.clicker.user, {
           SEND_MESSAGES: true,
           VIEW_CHANNEL: true,
@@ -82,7 +95,7 @@ One of our TAs will join you as soon as possible.`, { embed, component: row1 });
       }
 
       if (button.id === 'claim') {
-        clickHandler(button, row2, button.id);
+        clickHandler(button, row2, button.id, client);
       }
 
       if (button.id === 'unclaim') {
@@ -91,16 +104,22 @@ One of our TAs will join you as soon as possible.`, { embed, component: row1 });
 
       if (button.id === 'close') {
         await button.clicker.fetch();
-        const embed = new Discord.MessageEmbed().setDescription(`Ticket closed by <@${button.clicker.user.id}>
-      It will be deleted after three seconds`).setColor('#f44336');
+        const embed = new Discord.MessageEmbed().setDescription(`Ticket closed by <@${button.clicker.user.id}>`).setColor('#f44336');
         await button.channel.send(embed);
         setTimeout(async () => {
-          button.channel.delete();
-          // button.channel.setParent(CLOSED);
-        }, 3000);
+          button.channel.setParent(CLOSED);
+          setTimeout(async () => {
+            const embed = new Discord.MessageEmbed().setDescription(`The ticket is closed, you can delete or save it`).setColor('#ffc107');
+            await button.channel.send({ embed, component: row3 });
+          }, 3000);
+        }, 2000);
+      }
+
+      if (button.id === 'delete') {
+        button.channel.delete();
       }
     } catch (err) {
-      console.log(err.message);
+      // console.log(err.message);
     }
   });
   // TA_ROLE

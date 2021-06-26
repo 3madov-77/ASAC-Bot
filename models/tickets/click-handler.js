@@ -60,7 +60,7 @@ const unsupport = async (button) => {
 
 module.exports = async (button, row, type) => {
   await button.clicker.fetch();
-  button.channel.fetch();
+  await button.channel.fetch();
   const roles = button.clicker.member._roles;
   if ((!roles.includes(taRole) && !roles.includes(instRole))) {
     unsupport(button);
@@ -69,19 +69,24 @@ module.exports = async (button, row, type) => {
 
   getTickets();
   if (type === 'claim' && !checkClaim(button.channel.id)) {
+    const permissions = button.channel.permissionOverwrites;
+    button.channel.setParent(CLAIMED);
+    button.channel.overwritePermissions(permissions);
+    // let name = button.channel.name;
+    // name = '📘' + name.slice(2, name.length - 2) + '📘';
+    //  button.channel.setName(name);
     claimTicket(button.channel.id, button.clicker.user.id);
     claimingMessage(button, row, type);
     // await button.channel.fetch();
     // await button.channel.lockPermissions();
-    const permissions = button.channel.permissionOverwrites;
-    await button.channel.setParent(CLAIMED);
-    await button.channel.overwritePermissions(permissions);
-    // console.log(button.channel.permissionOverwrites);
-    // await button.channel.updateOverwrite(button.channel.permissionOverwrites);
-    // button.channel.updateOverwrite(button.clicker.user, {
-    //   SEND_MESSAGES: true,
-    //   VIEW_CHANNEL: true,
-    // });
+
+
+    console.log('123', button.channel.id);
+    setTimeout(() => {
+      button.channel.setParent(CLAIMED);
+      button.channel.overwritePermissions(permissions);
+    }, 500);
+
   }
 
   if (type === 'unclaim' && checkClaim(button.channel.id)) {
@@ -91,8 +96,17 @@ module.exports = async (button, row, type) => {
       button.channel.send(notSupport);
       return;
     }
+    const permissions = button.channel.permissionOverwrites;
+
+    // let name = button.channel.name;
+    // name = '📗' + name.slice(2, name.length - 2) + '📗';
+    //  button.channel.setName(name);
     unClaimTicket(button.channel.id);
     claimingMessage(button, row, type);
-    button.channel.setParent(QUEUE);
+    console.log('321', button.channel.id);
+    setTimeout(() => {
+      button.channel.setParent(QUEUE);
+      button.channel.overwritePermissions(permissions);
+    }, 500);
   }
 };
