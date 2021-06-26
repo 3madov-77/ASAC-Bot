@@ -1,5 +1,7 @@
 require('dotenv').config();
 const PREFIX = process.env.PREFIX;
+const COMMANDS_CHANNEL = process.env.COMMANDS_CHANNEL;
+const DEV_CHANNEL = process.env.DEV_CHANNEL;
 
 const validatePermissions = (permissions) => {
   const validPermissions = [
@@ -53,6 +55,7 @@ module.exports = (client, commandOptions) => {
     permissions = [],
     requiredRoles = [],
     callback,
+    channels = [COMMANDS_CHANNEL, DEV_CHANNEL],
   } = commandOptions;
 
   // Ensure the command and aliases are in an array
@@ -74,6 +77,11 @@ module.exports = (client, commandOptions) => {
   // Listen for messages
   client.on('message', (message) => {
     const { member, content, guild } = message;
+    let channelFlag = false;
+    for (const channel of channels) {
+      if (channel == message.channel.id) channelFlag = true;
+    }
+    if(!channelFlag) return;
 
     for (const alias of commands) {
       const command = `${PREFIX}${alias.toLowerCase()}`;
