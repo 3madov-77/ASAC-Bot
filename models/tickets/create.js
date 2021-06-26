@@ -12,7 +12,7 @@ const GUILD = process.env.GUILD;
 const CLOSED = process.env.CLOSED;
 const SAVED = process.env.SAVED;
 const QUEUE = process.env.QUEUE;
-const ticketsIDs = ['201', '301', '401js', '401py', '401java'];
+const ticketsIDs = ['102', '201', '301', '401js', '401py', '401java'];
 const taRole = process.env.TA_ROLE;
 
 

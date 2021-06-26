@@ -7,8 +7,8 @@ const fs = require('fs');
 
 // const command = require('./models/command');
 // const createChannel = require('./models/create-channel');
-// const createPanel = require('./models/tickets/panel');
-const createTicket = require('./models/tickets/create');
+const createPanel = require('./models/tickets/panel');
+// const createTicket = require('./models/tickets/create');
 const mongo = require('./models/database');
 
 const token = process.env.TOKEN;
@@ -42,8 +42,8 @@ client.on('ready', async () => {
 
   readCommands('models/commands');
 
-  // createPanel(client);
-  createTicket(client);
+  createPanel(client);
+  // createTicket(client);
 
   client.user.setPresence({
     activity: {

@@ -11,6 +11,11 @@ module.exports = async (client) => {
   const embed = new Discord.MessageEmbed().setDescription(`Need help?
   Click on one of the buttons below depending on your course.`).setTitle('ASAC Tickets System').setFooter('by Abdulhakim Zatar').setColor('#b006c6');
 
+  let btn102 = new MessageButton()
+    .setLabel('102 - Level')
+    .setStyle('blurple')
+    .setID('102');
+
   let btn201 = new MessageButton()
     .setLabel('201 - Level')
     .setStyle('blurple')
@@ -37,6 +42,7 @@ module.exports = async (client) => {
     .setID('401java');
 
 
-  await channel.send({ embed, buttons: [btn201,btn301,btn401js,btn401py,btn401java] });
+  await channel.send({ embed, buttons: [btn102, btn201, btn301] });
+  await channel.send({ embed, buttons: [btn401js, btn401py, btn401java] });
   // addReaction(message, ['📩']);
 };
