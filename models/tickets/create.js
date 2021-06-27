@@ -133,7 +133,7 @@ One of our <@&856605767583137793> will join you as soon as possible.`, { embed, 
 
         setTimeout(async () => {
           try {
-            // await guild.member(button.clicker.user.id).voice.setChannel('857169550625210378');
+            await guild.member(button.clicker.user.id).voice.setChannel('857169550625210378');
           } catch (err) {
             const embed = new Discord.MessageEmbed().setDescription(`<@${button.clicker.user.id}> please join "⌛Waiting for Help⌛" channel`).setColor('#ffc107');
             await channel.send(embed);
