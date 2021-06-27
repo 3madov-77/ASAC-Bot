@@ -90,8 +90,8 @@ module.exports = async (client) => {
         let guild = await client.guilds.fetch(GUILD);
         // await createChannel(guild, `📗test📗`, '856836553623863307');
         if (checkTicket(button.clicker.user.id)) {
-          const embed = new Discord.MessageEmbed().setDescription(`You have an opened ticket.`).setTitle('ASAC Tickets System').setColor('#ffc107');
           console.log(nickname, 'spam ticket');
+          const embed = new Discord.MessageEmbed().setDescription(`You have an opened ticket.`).setTitle('ASAC Tickets System').setColor('#ffc107');
           button.clicker.user.send(embed);
         } else {
           tickets.push(button.clicker.user.id);
