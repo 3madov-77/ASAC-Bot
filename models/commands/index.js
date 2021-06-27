@@ -2,6 +2,7 @@ require('dotenv').config();
 const PREFIX = process.env.PREFIX;
 const COMMANDS_CHANNEL = process.env.COMMANDS_CHANNEL;
 const DEV_CHANNEL = process.env.DEV_CHANNEL;
+const Discord = require('discord.js');
 
 const validatePermissions = (permissions) => {
   const validPermissions = [
@@ -81,7 +82,7 @@ module.exports = (client, commandOptions) => {
     for (const channel of channels) {
       if (channel == message.channel.id) channelFlag = true;
     }
-    if(!channelFlag) return;
+    if (!channelFlag) return;
 
     for (const alias of commands) {
       const command = `${PREFIX}${alias.toLowerCase()}`;
@@ -130,7 +131,19 @@ module.exports = (client, commandOptions) => {
         }
 
         // Handle the custom command code
+        const embedLog = new Discord.MessageEmbed()
+          .addFields(
+            { inline: true, name: 'User', value: `<@${message.author.id}>` },
+            { inline: true, name: 'Command', value: message.content },
+          )
+          .setAuthor(message.author.username, message.author.avatarURL())
+          .setColor('#008CBA')
+          .setFooter('ASAC Bot - commands');
+
         callback(message, args, args.join(' '), client);
+        client.channels.fetch('858566167228579901').then((channel)=>{
+          channel.send(embedLog);
+        });
 
         return;
       }

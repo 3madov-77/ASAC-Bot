@@ -90,6 +90,18 @@ Please write a description of your problem then do the following:
 One of our <@&856605767583137793> will join you as soon as possible.`, { embed, component: row1 });
         // await button.clicker.fetch();
         // console.log(button.clicker);
+        console.log('?');
+        const embedLog = new Discord.MessageEmbed()
+          .addFields(
+            { inline: true, name: 'Description', value: `<@${button.clicker.user.id}> created a ticket` },
+          )
+          .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
+          .setColor('#008CBA')
+          .setFooter('ASAC Bot - tickets');
+        client.channels.fetch('856858334439145492').then((channel) => {
+          channel.send(embedLog);
+        });
+
         setTimeout(async () => {
           try {
             await guild.member(button.clicker.user.id).voice.setChannel('857169550625210378');
@@ -105,11 +117,11 @@ One of our <@&856605767583137793> will join you as soon as possible.`, { embed, 
       }
 
       if (button.id === 'unclaim') {
-        clickHandler(button, row1, button.id);
+        clickHandler(button, row1, button.id,client);
       }
 
       if (button.id === 'delete') {
-        clickHandler(button, null, button.id);
+        clickHandler(button, null, button.id,client);
       }
 
       if (button.id === 'close') {
@@ -123,6 +135,17 @@ One of our <@&856605767583137793> will join you as soon as possible.`, { embed, 
           setTimeout(async () => {
             const embed = new Discord.MessageEmbed().setDescription(`The ticket is closed, you can delete or save it`).setColor('#ffc107');
             await button.channel.send({ embed, component: row3 });
+
+            const embedLog = new Discord.MessageEmbed()
+              .addFields(
+                { inline: true, name: 'Description', value: `<@${button.clicker.user.id}> closed a ticket` },
+              )
+              .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
+              .setColor('#008CBA')
+              .setFooter('ASAC Bot - tickets');
+            client.channels.fetch('856858334439145492').then((channel) => {
+              channel.send(embedLog);
+            });
           }, 1000);
         }, 2000);
       }

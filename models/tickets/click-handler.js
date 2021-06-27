@@ -58,7 +58,7 @@ const unsupport = async (button) => {
 
 
 
-module.exports = async (button, row, type) => {
+module.exports = async (button, row, type, client) => {
   await button.clicker.fetch();
   await button.channel.fetch();
   const roles = button.clicker.member._roles;
@@ -67,9 +67,19 @@ module.exports = async (button, row, type) => {
     return;
   }
 
-  if(type === 'delete'){
+  if (type === 'delete') {
     unClaimTicket(button.channel.id);
     button.channel.delete();
+    const embedLog = new Discord.MessageEmbed()
+      .addFields(
+        { inline: true, name: 'Description', value: `<@${button.clicker.user.id}> deleted a ticket` },
+      )
+      .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
+      .setColor('#008CBA')
+      .setFooter('ASAC Bot - tickets');
+    client.channels.fetch('856858334439145492').then((channel) => {
+      channel.send(embedLog);
+    });
   }
 
   getTickets();
@@ -90,6 +100,16 @@ module.exports = async (button, row, type) => {
     setTimeout(() => {
       button.channel.setParent(CLAIMED);
       button.channel.overwritePermissions(permissions);
+      const embedLog = new Discord.MessageEmbed()
+        .addFields(
+          { inline: true, name: 'Description', value: `<@${button.clicker.user.id}> claimed a ticket` },
+        )
+        .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
+        .setColor('#008CBA')
+        .setFooter('ASAC Bot - tickets');
+      client.channels.fetch('856858334439145492').then((channel) => {
+        channel.send(embedLog);
+      });
     }, 500);
 
   }
@@ -112,6 +132,16 @@ module.exports = async (button, row, type) => {
     setTimeout(() => {
       button.channel.setParent(QUEUE);
       button.channel.overwritePermissions(permissions);
+      const embedLog = new Discord.MessageEmbed()
+        .addFields(
+          { inline: true, name: 'Description', value: `<@${button.clicker.user.id}> unclaimed a ticket` },
+        )
+        .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
+        .setColor('#008CBA')
+        .setFooter('ASAC Bot - tickets');
+      client.channels.fetch('856858334439145492').then((channel) => {
+        channel.send(embedLog);
+      });
     }, 500);
   }
 };
