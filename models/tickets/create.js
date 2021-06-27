@@ -147,15 +147,15 @@ One of our <@&856605767583137793> will join you as soon as possible.`, { embed, 
       }
 
       if (button.id === 'delete') {
-        tickets = tickets.filter((userId) => {
-          return userId != button.clicker.user.id;
-        });
-        updateTickets(tickets);
         clickHandler(button, null, button.id, client);
       }
 
       if (button.id === 'close') {
         await button.clicker.fetch();
+        tickets = tickets.filter((userId) => {
+          return userId != button.clicker.user.id;
+        });
+        updateTickets(tickets);
         const oldEmbed = new Discord.MessageEmbed().setDescription(`Support will be with you shortly.`).setTitle('ASAC Tickets System').setFooter('by Abdulhakim Zatar').setColor('#b006c6');
         button.message.edit(button.message.content, { oldEmbed, component: null });
         const embed = new Discord.MessageEmbed().setDescription(`Ticket closed by <@${button.clicker.user.id}>`).setColor('#f44336');
