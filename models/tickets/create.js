@@ -1,5 +1,6 @@
 /* eslint-disable indent */
 'use strict';
+const fs = require('fs');
 
 const Discord = require('discord.js');
 const { MessageButton, MessageActionRow } = require('discord-buttons');
@@ -15,12 +16,28 @@ const QUEUE = process.env.QUEUE;
 const ticketsIDs = ['102', '201', '301', '401js', '401py', '401java'];
 const taRole = process.env.TA_ROLE;
 
+let tickets = [];
 
 module.exports = async (client) => {
+  const getTickets = () => {
+    tickets = JSON.parse(fs.readFileSync('createdTickets.json', 'utf-8'));
+  };
+
+
+  const updateTickets = (newTickets) => {
+    newTickets = JSON.stringify(newTickets);
+    fs.writeFileSync('tickets.json', newTickets, function (err) {
+      console.log(err.message);
+    });
+  };
+
+  const checkTicket = (userId) => {
+    return tickets.includes(userId);
+  };
   // const channelID = TICKETS_ROOM;
   // await client.channels.cache.get(channelID).messages.fetch();
   client.on('clickButton', async (button) => {
-
+    getTickets();
     try {
       await button.defer();
       let close = new MessageButton()
@@ -72,6 +89,15 @@ module.exports = async (client) => {
         }
         let guild = await client.guilds.fetch(GUILD);
         // await createChannel(guild, `📗test📗`, '856836553623863307');
+        if (checkTicket(button.clicker.user.id)) {
+          const embed = new Discord.MessageEmbed().setDescription(`You have an opened ticket.`).setTitle('ASAC Tickets System').setColor('#ffc107');
+          console.log(nickname, 'spam ticket');
+          button.clicker.user.send(embed);
+        } else {
+          tickets.push(button.clicker.user.id);
+          updateTickets(tickets);
+        }
+
         const channel = await createChannel(guild, `${button.id}-${nickname}`, QUEUE, button.clicker.user.id);
         channel.updateOverwrite(button.clicker.user, {
           SEND_MESSAGES: true,
@@ -90,7 +116,6 @@ Please write a description of your problem then do the following:
 One of our <@&856605767583137793> will join you as soon as possible.`, { embed, component: row1 });
         // await button.clicker.fetch();
         // console.log(button.clicker);
-        console.log('?');
         const embedLog = new Discord.MessageEmbed()
           .addFields(
             { inline: true, name: 'Description', value: `<@${button.clicker.user.id}> created a ticket` },
@@ -117,11 +142,15 @@ One of our <@&856605767583137793> will join you as soon as possible.`, { embed, 
       }
 
       if (button.id === 'unclaim') {
-        clickHandler(button, row1, button.id,client);
+        clickHandler(button, row1, button.id, client);
       }
 
       if (button.id === 'delete') {
-        clickHandler(button, null, button.id,client);
+        tickets = tickets.filter((userId) => {
+          return userId != button.clicker.user.id;
+        });
+        updateTickets(tickets);
+        clickHandler(button, null, button.id, client);
       }
 
       if (button.id === 'close') {
