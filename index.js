@@ -9,6 +9,7 @@ const fs = require('fs');
 // const createChannel = require('./models/create-channel');
 // const createPanel = require('./models/tickets/panel');
 const createTicket = require('./models/tickets/create');
+const roles = require('./models/roles/click-handler');
 const mongo = require('./models/database');
 
 const token = process.env.TOKEN;
@@ -19,10 +20,6 @@ client.on('ready', async () => {
 
   console.log('ready');
   await mongo();
-  // console.log(await points.all('223894785218445314'));
-  // command(client, 'cc', (msg) => {
-  //   createChannel(msg, 'test', '856960018239062076');
-  // });
 
   const baseFile = 'index.js';
   const commandBase = require(`./models/commands/${baseFile}`);
@@ -44,6 +41,7 @@ client.on('ready', async () => {
 
   // createPanel(client);
   createTicket(client);
+  roles(client);
 
   client.user.setPresence({
     activity: {

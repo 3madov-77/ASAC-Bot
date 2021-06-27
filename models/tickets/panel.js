@@ -8,8 +8,8 @@ const TICKETS_ROOM = process.env.TICKETS_ROOM;
 module.exports = async (client) => {
   const channelID = TICKETS_ROOM;
   const channel = await client.channels.fetch(channelID);
-  const embed = new Discord.MessageEmbed().setDescription(`Need help?
-  Click on one of the buttons below depending on your course.`).setTitle('ASAC Tickets System').setFooter('by Abdulhakim Zatar').setColor('#b006c6');
+  const embed = new Discord.MessageEmbed().setDescription(`Have you picked the **wronge course**?
+  Click on the button below to create a ticket.`).setTitle('ASAC Tickets System').setFooter('by Abdulhakim Zatar').setColor('#ffc107');
 
   let btn102 = new MessageButton()
     .setLabel('102 - Level')
@@ -41,8 +41,14 @@ module.exports = async (client) => {
     .setStyle('blurple')
     .setID('401java');
 
+  let btnRole = new MessageButton()
+    .setLabel('Change Course')
+    .setStyle('red')
+    .setID('role');
 
-  await channel.send({ embed, buttons: [btn102, btn201, btn301] });
-  await channel.send({ embed, buttons: [btn401js, btn401py, btn401java] });
+
+  // await channel.send({ embed, buttons: [btn102, btn201, btn301] });
+  // await channel.send({ embed, buttons: [btn401js, btn401py, btn401java] });
+  // await channel.send({ embed, buttons: [btnRole] });
   // addReaction(message, ['📩']);
 };

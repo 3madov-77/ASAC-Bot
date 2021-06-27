@@ -73,7 +73,7 @@ module.exports = {
 
     for (let index = 1; index <= 10; index++) {
       guild.channels.create(`Table-${index}`, {
-        type: 'voice',userLimit:5, parent: category.id, permissionOverwrites: [
+        type: 'voice', userLimit: 5, parent: category.id, permissionOverwrites: [
           {
             id: message.guild.id,
             deny: ['VIEW_CHANNEL'],
@@ -105,7 +105,11 @@ module.exports = {
     });
     embed.addField('Create Voice Channels', 'Done ✅');
 
+    const channel = await client.channels.fetch(`858395637133213696`);
 
+    channel.updateOverwrite(newRole.id, {
+      VIEW_CHANNEL: false,
+    });
 
     message.reply(embed);
     message.delete();

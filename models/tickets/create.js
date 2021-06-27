@@ -13,7 +13,7 @@ const GUILD = process.env.GUILD;
 const CLOSED = process.env.CLOSED;
 const SAVED = process.env.SAVED;
 const QUEUE = process.env.QUEUE;
-const ticketsIDs = ['102', '201', '301', '401js', '401py', '401java'];
+const ticketsIDs = ['102', '201', '301', '401js', '401py', '401java', 'role'];
 const taRole = process.env.TA_ROLE;
 
 let tickets = [];
@@ -82,7 +82,9 @@ module.exports = async (client) => {
         getTickets();
         const roles = button.clicker.member._roles;
         const nickname = await getNickname(client, button.clicker.user);
-        if ((roles.includes(taRole))) {
+        const isDev = roles.includes('856598723852238858');
+
+        if (roles.includes(taRole) && !isDev) {
           const embed = new Discord.MessageEmbed().setDescription(`TAs can't create tickets.`).setTitle('ASAC Tickets System').setColor('#ffc107');
           console.log(nickname, 'tried to create ticket');
           button.clicker.user.send(embed);
