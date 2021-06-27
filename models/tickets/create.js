@@ -79,6 +79,7 @@ module.exports = async (client) => {
 
       if (ticketsIDs.includes(button.id)) {
         await button.clicker.fetch();
+        getTickets();
         const roles = button.clicker.member._roles;
         const nickname = await getNickname(client, button.clicker.user);
         if ((roles.includes(taRole))) {
@@ -160,24 +161,28 @@ One of our <@&856605767583137793> will join you as soon as possible.`, { embed, 
         button.message.edit(button.message.content, { oldEmbed, component: null });
         const embed = new Discord.MessageEmbed().setDescription(`Ticket closed by <@${button.clicker.user.id}>`).setColor('#f44336');
         await button.channel.send(embed);
-        setTimeout(async () => {
-          button.channel.setParent(CLOSED);
-          setTimeout(async () => {
-            const embed = new Discord.MessageEmbed().setDescription(`The ticket is closed, you can delete or save it`).setColor('#ffc107');
-            await button.channel.send({ embed, component: row3 });
-
-            const embedLog = new Discord.MessageEmbed()
-              .addFields(
-                { inline: true, name: 'Description', value: `<@${button.clicker.user.id}> closed a ticket` },
-              )
-              .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
-              .setColor('#008CBA')
-              .setFooter('ASAC Bot - tickets');
-            client.channels.fetch('856858334439145492').then((channel) => {
-              channel.send(embedLog);
-            });
-          }, 1000);
+        setTimeout(() => {
+          button.channel.delete();
         }, 2000);
+
+        // setTimeout(async () => {
+        //   button.channel.setParent(CLOSED);
+        //   setTimeout(async () => {
+        //     const embed = new Discord.MessageEmbed().setDescription(`The ticket is closed, you can delete or save it`).setColor('#ffc107');
+        //     await button.channel.send({ embed, component: row3 });
+
+        //     const embedLog = new Discord.MessageEmbed()
+        //       .addFields(
+        //         { inline: true, name: 'Description', value: `<@${button.clicker.user.id}> closed a ticket` },
+        //       )
+        //       .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
+        //       .setColor('#008CBA')
+        //       .setFooter('ASAC Bot - tickets');
+        //     client.channels.fetch('856858334439145492').then((channel) => {
+        //       channel.send(embedLog);
+        //     });
+        //   }, 1000);
+        // }, 2000);
       }
 
 
