@@ -16,6 +16,17 @@ module.exports = async (client) => {
         `).setTitle('ASAC Roles System').setColor('#ffc107');
         button.clicker.user.send(embed);
 
+        const embedLog = new Discord.MessageEmbed()
+          .addFields(
+            { inline: true, name: 'Description', value: `<@${button.clicker.user.id}> picked <@&${role.id}>` },
+          )
+          .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
+          .setColor('#008CBA')
+          .setFooter('ASAC Bot - tickets');
+        client.channels.fetch('858805255679639612').then((channel) => {
+          channel.send(embedLog);
+        });
+
       }
     } catch (err) {
       // console.log(err.message);

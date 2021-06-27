@@ -37,7 +37,6 @@ module.exports = async (client) => {
   // const channelID = TICKETS_ROOM;
   // await client.channels.cache.get(channelID).messages.fetch();
   client.on('clickButton', async (button) => {
-    getTickets();
     try {
       await button.defer();
       let close = new MessageButton()
@@ -79,7 +78,6 @@ module.exports = async (client) => {
 
       if (ticketsIDs.includes(button.id)) {
         await button.clicker.fetch();
-        getTickets();
         const roles = button.clicker.member._roles;
         const nickname = await getNickname(client, button.clicker.user);
         const isDev = roles.includes('856598723852238858');
@@ -93,10 +91,12 @@ module.exports = async (client) => {
         let guild = await client.guilds.fetch(GUILD);
         // await createChannel(guild, `📗test📗`, '856836553623863307');
         // console.log(checkTicket(button.clicker.user.id));
+        getTickets();
         if (checkTicket(button.clicker.user.id)) {
           console.log(nickname, 'spam ticket');
-          const embed = new Discord.MessageEmbed().setDescription(`You have an opened ticket.`).setTitle('ASAC Tickets System').setColor('#ffc107');
+          const embed = new Discord.MessageEmbed().setDescription(`You already have an open ticket.`).setTitle('ASAC Tickets System').setColor('#ffc107');
           button.clicker.user.send(embed);
+          return;
         } else {
           tickets.push(button.clicker.user.id);
           updateTickets(tickets);
@@ -133,7 +133,7 @@ One of our <@&856605767583137793> will join you as soon as possible.`, { embed, 
 
         setTimeout(async () => {
           try {
-            await guild.member(button.clicker.user.id).voice.setChannel('857169550625210378');
+            // await guild.member(button.clicker.user.id).voice.setChannel('857169550625210378');
           } catch (err) {
             const embed = new Discord.MessageEmbed().setDescription(`<@${button.clicker.user.id}> please join "⌛Waiting for Help⌛" channel`).setColor('#ffc107');
             await channel.send(embed);
