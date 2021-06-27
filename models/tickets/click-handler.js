@@ -120,7 +120,7 @@ module.exports = async (button, row, type, client) => {
 
     const roles = button.clicker.member._roles;
     const isDev = roles.includes('856598723852238858');
-    console.log(isDev);
+    // console.log(isDev);
     if (claimer !== button.clicker.user.id && !isDev) {
       const notSupport = new Discord.MessageEmbed().setDescription(`Ticket already claimed <@${button.clicker.user.id}>`).setColor('#f44336');
       button.channel.send(notSupport);
