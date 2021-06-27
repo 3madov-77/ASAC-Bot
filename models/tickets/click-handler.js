@@ -8,6 +8,7 @@ const QUEUE = process.env.QUEUE;
 const CLAIMED = process.env.CLAIMED;
 const points = require('../points');
 let claimedTickets = [];
+const GUILD = process.env.GUILD;
 
 const getTickets = () => {
   claimedTickets = JSON.parse(fs.readFileSync('tickets.json', 'utf-8'));
@@ -116,7 +117,11 @@ module.exports = async (button, row, type, client) => {
 
   if (type === 'unclaim' && checkClaim(button.channel.id)) {
     const claimer = checkClaim(button.channel.id);
-    if (claimer !== button.clicker.user.id) {
+
+    const roles = button.clicker.member._roles;
+    const isDev = roles.includes('856598723852238858');
+
+    if (claimer !== button.clicker.user.id && !isDev) {
       const notSupport = new Discord.MessageEmbed().setDescription(`Ticket already claimed <@${button.clicker.user.id}>`).setColor('#f44336');
       button.channel.send(notSupport);
       return;
