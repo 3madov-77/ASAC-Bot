@@ -20,5 +20,5 @@ module.exports = {
     }, 3000);
   },
   permissions: [],
-  requiredRoles: ['Instructor', 'Dev'],
+  requiredRoles: ['Instructor','Teacher Assistant', 'Dev'],
 };

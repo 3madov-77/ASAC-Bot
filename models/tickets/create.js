@@ -122,7 +122,9 @@ One of our <@&856605767583137793> will join you as soon as possible.`, { embed, 
         // console.log(button.clicker);
         const embedLog = new Discord.MessageEmbed()
           .addFields(
-            { inline: true, name: 'Description', value: `<@${button.clicker.user.id}> created a ticket` },
+            { inline: false, name: 'Description', value: `🔨 <@${button.clicker.user.id}> created a ticket 🔨` },
+            { inline: false, name: 'Ticket', value: button.channel.name },
+
           )
           .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
           .setColor('#008CBA')
@@ -165,6 +167,17 @@ One of our <@&856605767583137793> will join you as soon as possible.`, { embed, 
         await button.channel.send(embed);
         setTimeout(() => {
           button.channel.delete();
+          const embedLog = new Discord.MessageEmbed()
+            .addFields(
+              { inline: false, name: 'Description', value: `🔒 <@${button.clicker.user.id}> closed a ticket 🔒` },
+              { inline: false, name: 'Ticket', value: button.channel.name },
+            )
+            .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
+            .setColor('#008CBA')
+            .setFooter('ASAC Bot - tickets');
+          client.channels.fetch('856858334439145492').then((channel) => {
+            channel.send(embedLog);
+          });
         }, 2000);
 
         // setTimeout(async () => {

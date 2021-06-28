@@ -103,7 +103,9 @@ module.exports = async (button, row, type, client) => {
       button.channel.overwritePermissions(permissions);
       const embedLog = new Discord.MessageEmbed()
         .addFields(
-          { inline: true, name: 'Description', value: `<@${button.clicker.user.id}> claimed a ticket` },
+          { inline: false, name: 'Description', value: `📌 <@${button.clicker.user.id}> claimed a ticket 📌` },
+          { inline: false, name: 'Ticket', value: button.channel.name },
+
         )
         .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
         .setColor('#008CBA')
@@ -122,8 +124,13 @@ module.exports = async (button, row, type, client) => {
     const isDev = roles.includes('856598723852238858');
     // console.log(isDev);
     if (claimer !== button.clicker.user.id && !isDev) {
-      const notSupport = new Discord.MessageEmbed().setDescription(`Ticket already claimed <@${button.clicker.user.id}>`).setColor('#f44336');
-      button.channel.send(notSupport);
+      // const notSupport = new Discord.MessageEmbed().setDescription(`Ticket already claimed <@${button.clicker.user.id}>`).setColor('#f44336');
+      const embed = new Discord.MessageEmbed().setDescription(`You can't claim a claimed ticket,
+      
+      please tag the dev role in the ticket if you need it to be unclaimed.
+      `).setTitle('ASAC Tickets System').setColor('#ffc107');
+      button.clicker.user.send(embed);
+      // button.channel.send(notSupport);
       return;
     }
     const permissions = button.channel.permissionOverwrites;
@@ -139,7 +146,8 @@ module.exports = async (button, row, type, client) => {
       button.channel.overwritePermissions(permissions);
       const embedLog = new Discord.MessageEmbed()
         .addFields(
-          { inline: true, name: 'Description', value: `<@${button.clicker.user.id}> unclaimed a ticket` },
+          { inline: false, name: 'Description', value: `😢 <@${button.clicker.user.id}> unclaimed a ticket 😢` },
+          { inline: false, name: 'Ticket', value: button.channel.name },
         )
         .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
         .setColor('#008CBA')

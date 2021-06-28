@@ -11,12 +11,24 @@ module.exports = {
   maxArgs: 0,
   callback: async (message, args, text) => {
     const all = await points.all();
-    const embed = new Discord.MessageEmbed().setTitle('ASAC Points System').setDescription(`All users.`).setFooter('by Abdulhakim Zatar').setColor('#b006c6');
+    const embed1 = new Discord.MessageEmbed().setTitle('ASAC Points System').setDescription(`All users.`).setFooter('by Abdulhakim Zatar - page 1').setColor('#b006c6');
+    const embed2 = new Discord.MessageEmbed().setTitle('ASAC Points System').setDescription(`All users.`).setFooter('by Abdulhakim Zatar - page 2').setColor('#b006c6');
+
+    const embeds = [embed1, embed2];
     all.forEach((user, index) => {
-      embed.addField(`Rank: ${index + 1}`, `<@${user.userId}> has ${user.points} points.`);
+      let i = 0;
+      index < 25 ? i = 0 : i = 1;
+      embeds[i].addField(`Rank: ${index + 1}`, `<@${user.userId}> has ${user.points} points.`);
       // embed.addField();
     });
-    message.reply('',{embed});
+    let today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    const yyyy = today.getFullYear();
+    today = mm + '/' + dd + '/' + yyyy;
+
+    message.channel.send(today, { embed: embed1 });
+    message.channel.send({ embed: embed2 });
     message.delete();
   },
   permissions: [],

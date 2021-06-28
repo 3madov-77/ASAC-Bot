@@ -56,7 +56,7 @@ module.exports = (client, commandOptions) => {
     permissions = [],
     requiredRoles = [],
     callback,
-    channels = [COMMANDS_CHANNEL, DEV_CHANNEL],
+    channels = [COMMANDS_CHANNEL, DEV_CHANNEL,'858910622905008159'],
   } = commandOptions;
 
   // Ensure the command and aliases are in an array
