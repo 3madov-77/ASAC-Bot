@@ -32,7 +32,7 @@ module.exports = {
       const member = guild.members.cache.find(user => user.id === id);
       member.roles.add(newRole);
       TAs.push(id);
-      embed.addField(`Add Role to <@id>`, 'Done ✅');
+      embed.addField(`Add Role to <@${id}>`, 'Done ✅');
     }
 
     const category = await guild.channels.create(cohort, {
