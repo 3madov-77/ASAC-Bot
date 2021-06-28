@@ -85,6 +85,18 @@ module.exports = async (button, row, type, client) => {
 
   getTickets();
   if (type === 'claim' && !checkClaim(button.channel.id)) {
+    const messages = await button.channel.messages.fetch({ limit: 100 });
+    let noStudentMessages = true;
+    messages.forEach(message => {
+      if (message.member.roles.cache.has('856604906815488041')) {
+        noStudentMessages = false;
+      }
+    });
+    if (noStudentMessages) {
+      const embed = new Discord.MessageEmbed().setDescription(`You can't claim the ticket because there is no description from the student`).setTitle('ASAC Tickets System').setColor('#ffc107');
+      button.clicker.user.send(embed);
+      return;
+    }
     const permissions = button.channel.permissionOverwrites;
     button.channel.setParent(CLAIMED);
     button.channel.overwritePermissions(permissions);
