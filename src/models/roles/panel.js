@@ -1,13 +1,17 @@
 'use strict';
+
+//------------------------------// Third Party Resources \\----------------------------\\
 require('dotenv').config();
 const { MessageButton } = require('discord-buttons');
 const Discord = require('discord.js');
+
+//--------------------------------// Esoteric Resources \\-------------------------------\\
 const ROLES_ROOM = process.env.ROLES_ROOM;
 
+//---------------------------------// Roles Panel \\-------------------------------\\
 
 module.exports = async (client) => {
-  const channelID = ROLES_ROOM;
-  const channel = await client.channels.fetch(channelID);
+  const channel = await client.channels.fetch(ROLES_ROOM);
 
   const embed = new Discord.MessageEmbed().setDescription(`Please select the course you are currently in.
   
@@ -87,5 +91,5 @@ module.exports = async (client) => {
   await channel.send({ embed, buttons: [btn102d36, btn201d28, btn201d31, btn201d32] });
   await channel.send({ embed, buttons: [btn301d22, btn301d23, btn301d24, btn301d25, btn401d02java] });
   await channel.send({ embed, buttons: [btn401d08js, btn401d09js, btn401d10js, btn401d03py, btn401d04py] });
-  // addReaction(message, ['📩']);
 };
+//-----------------------------------------------------------------------------------------\\

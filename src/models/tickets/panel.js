@@ -1,13 +1,18 @@
 'use strict';
+
+//------------------------------// Third Party Resources \\----------------------------\\
 require('dotenv').config();
 const { MessageButton } = require('discord-buttons');
 const Discord = require('discord.js');
+
+
+//--------------------------------// Esoteric Resources \\-------------------------------\\
 const TICKETS_ROOM = process.env.TICKETS_ROOM;
 
+//---------------------------------// Tickets Panel \\-------------------------------\\
 
 module.exports = async (client) => {
-  const channelID = TICKETS_ROOM;
-  const channel = await client.channels.fetch(channelID);
+  const channel = await client.channels.fetch(TICKETS_ROOM);
   const embed = new Discord.MessageEmbed().setDescription(`Have you picked the **wronge course**?
   Click on the button below to create a ticket.`).setTitle('ASAC Tickets System').setFooter('by Abdulhakim Zatar').setColor('#ffc107');
 
@@ -47,8 +52,8 @@ module.exports = async (client) => {
     .setID('role');
 
 
-  // await channel.send({ embed, buttons: [btn102, btn201, btn301] });
-  // await channel.send({ embed, buttons: [btn401js, btn401py, btn401java] });
-  // await channel.send({ embed, buttons: [btnRole] });
-  // addReaction(message, ['📩']);
+  await channel.send({ embed, buttons: [btn102, btn201, btn301] });
+  await channel.send({ embed, buttons: [btn401js, btn401py, btn401java] });
+  await channel.send({ embed, buttons: [btnRole] });
 };
+//-----------------------------------------------------------------------------------------\\

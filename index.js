@@ -1,28 +1,27 @@
 'use strict';
 
+//------------------------------// Third Party Resources \\----------------------------\\
 const Discord = require('discord.js');
-require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
-
-// const command = require('./models/command');
-// const createChannel = require('./models/create-channel');
-// const createPanel = require('./models/tickets/panel');
-const createTicket = require('./models/tickets/create');
-const roles = require('./models/roles/click-handler');
-const mongo = require('./models/database');
-
-const token = process.env.TOKEN;
-const client = new Discord.Client();
+require('dotenv').config();
 require('discord-buttons')(client);
 
+//---------------------------------// Import Resources \\-------------------------------\\
+const tickets = require('./src/models/tickets');
+const roles = require('./src/models/roles');
+const pg = require('./src/models/database');
+const commandBase = require(`./src/models/commands/index.js`);
+
+//--------------------------------// Esoteric Resources \\-------------------------------\\
+const token = process.env.TOKEN;
+const client = new Discord.Client();
+const baseFile = 'index.js';
+
+//---------------------------------// Bot Loading \\-------------------------------\\
+
 client.on('ready', async () => {
-
-  console.log('ready');
-  await mongo();
-
-  const baseFile = 'index.js';
-  const commandBase = require(`./models/commands/${baseFile}`);
+  await pg.connect();
 
   const readCommands = (dir) => {
     const files = fs.readdirSync(path.join(__dirname, dir));
@@ -38,9 +37,7 @@ client.on('ready', async () => {
   };
 
   readCommands('models/commands');
-
-  // createPanel(client);
-  createTicket(client);
+  tickets(client);
   roles(client);
 
   client.user.setPresence({
@@ -52,3 +49,4 @@ client.on('ready', async () => {
 });
 
 client.login(token);
+//-----------------------------------------------------------------------------------------\\

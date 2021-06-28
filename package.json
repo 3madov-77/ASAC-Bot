@@ -1,6 +1,6 @@
 {
   "name": "ASAC-Bot",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "## About",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,6 @@
     "discord-buttons": "^3.2.1",
     "discord.js": "^12.5.3",
     "dotenv": "^10.0.0",
-    "mongoose": "^5.12.15"
+    "pg": "^8.6.0"
   }
 }
