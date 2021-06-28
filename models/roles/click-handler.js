@@ -22,7 +22,7 @@ module.exports = async (client) => {
           )
           .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
           .setColor('#008CBA')
-          .setFooter('ASAC Bot - tickets');
+          .setFooter('ASAC Bot - roles');
         client.channels.fetch('858805255679639612').then((channel) => {
           channel.send(embedLog);
         });
