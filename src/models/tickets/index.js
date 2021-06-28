@@ -2,7 +2,6 @@
 'use strict';
 
 //------------------------------// Third Party Resources \\----------------------------\\
-const fs = require('fs');
 const Discord = require('discord.js');
 const { MessageButton, MessageActionRow } = require('discord-buttons');
 require('dotenv').config();
@@ -16,7 +15,7 @@ const ticketMethods = require('./methods');
 //--------------------------------// Esoteric Resources \\-------------------------------\\
 const GUILD = process.env.GUILD;
 // const CLOSED = process.env.CLOSED;
-const SAVED = process.env.SAVED;
+// const SAVED = process.env.SAVED;
 const QUEUE = process.env.QUEUE;
 const TA_ROLE = process.env.TA_ROLE;
 const DEV_ROLE = process.env.DEV_ROLE;
@@ -79,15 +78,16 @@ module.exports = async (client) => {
         button.clicker.user.send(embed);
         return;
       }
-      let guild = await client.guilds.fetch(GUILD);
-
-      if (ticketMethods.checkTicket(button.clicker.user.id)) {
+      const check = await ticketMethods.checkTicket(button.clicker.user.id);
+      
+      if (check) {
         console.log(nickname, 'spam ticket');
         const embed = new Discord.MessageEmbed().setDescription(`You already have an open ticket.`).setTitle('ASAC Tickets System').setColor('#ffc107');
         button.clicker.user.send(embed);
         return;
       }
-
+      
+      let guild = await client.guilds.fetch(GUILD);
       const channel = await createChannel(guild, `${button.id}-${nickname}`, QUEUE, button.clicker.user.id, 'text', button.clicker.user.id);
 
       const embed = new Discord.MessageEmbed().setDescription(`Support will be with you shortly.`).setTitle('ASAC Tickets System').setFooter('by Abdulhakim Zatar').setColor('#b006c6');

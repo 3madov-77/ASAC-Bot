@@ -2,18 +2,20 @@
 
 //------------------------------// Third Party Resources \\----------------------------\\
 const Discord = require('discord.js');
-const fs = require('fs');
 require('dotenv').config();
 
 //---------------------------------// Import Resources \\-------------------------------\\
 const points = require('../points');
+const ticketMethods = require('./methods');
 
 //--------------------------------// Esoteric Resources \\-------------------------------\\
 const taRole = process.env.TA_ROLE;
 const instRole = process.env.INST_ROLE;
 const QUEUE = process.env.QUEUE;
 const CLAIMED = process.env.CLAIMED;
-const GUILD = process.env.GUILD;
+const DEV_ROLE = process.env.DEV_ROLE;
+const TICKETS_LOG = process.env.TICKETS_LOG;
+const STUDENT_ROLE = process.env.STUDENT_ROLE;
 
 //---------------------------------// Bot Loading \\-------------------------------\\
 
@@ -31,62 +33,58 @@ const unsupport = async (button) => {
   return;
 };
 
-
-
 module.exports = async (button, row, type, client) => {
-  await button.clicker.fetch();
-  await button.channel.fetch();
+  await Promise.all([button.clicker.fetch(), button.channel.fetch()]);
   const roles = button.clicker.member._roles;
+
   if ((!roles.includes(taRole) && !roles.includes(instRole))) {
     unsupport(button);
     return;
   }
 
-  if (type === 'delete') {
-    unClaimTicket(button.channel.id);
-    button.channel.delete();
-    const embedLog = new Discord.MessageEmbed()
-      .addFields(
-        { inline: true, name: 'Description', value: `<@${button.clicker.user.id}> deleted a ticket` },
-      )
-      .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
-      .setColor('#008CBA')
-      .setFooter('ASAC Bot - tickets');
-    client.channels.fetch('856858334439145492').then((channel) => {
-      channel.send(embedLog);
-    });
-  }
+  // if (type === 'delete') {
+  //   button.channel.delete();
+  //   const embedLog = new Discord.MessageEmbed()
+  //     .addFields(
+  //       { inline: true, name: 'Description', value: `<@${button.clicker.user.id}> deleted a ticket` },
+  //     )
+  //     .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
+  //     .setColor('#008CBA')
+  //     .setFooter('ASAC Bot - tickets');
+  //   client.channels.fetch('856858334439145492').then((channel) => {
+  //     channel.send(embedLog);
+  //   });
+  // }
+  const isClaimed = await ticketMethods.isClaimed(button.channel.id);
 
-  getTickets();
-  if (type === 'claim' && !checkClaim(button.channel.id)) {
+  if (type === 'claim' && !isClaimed) {
+
     const messages = await button.channel.messages.fetch({ limit: 100 });
     let noStudentMessages = true;
     messages.forEach(message => {
-      if (message.member.roles.cache.has('856604906815488041')) {
+      if (message.member.roles.cache.has(STUDENT_ROLE)) {
         noStudentMessages = false;
       }
     });
+
     if (noStudentMessages) {
       const embed = new Discord.MessageEmbed().setDescription(`You can't claim the ticket because there is no description from the student`).setTitle('ASAC Tickets System').setColor('#ffc107');
       button.clicker.user.send(embed);
       return;
     }
+
     const permissions = button.channel.permissionOverwrites;
-    button.channel.setParent(CLAIMED);
-    button.channel.overwritePermissions(permissions);
-    // let name = button.channel.name;
-    // name = '📘' + name.slice(2, name.length - 2) + '📘';
-    //  button.channel.setName(name);
-    claimTicket(button.channel.id, button.clicker.user.id);
+
+    const claimTicket = await ticketMethods.claimTicket(button.clicker.user.id, button.channel.id);
+    if (!claimTicket) return;
+
     claimingMessage(button, row, type);
     points.addPoint(button.clicker.user.id);
-    // await button.channel.fetch();
-    // await button.channel.lockPermissions();
-
 
     setTimeout(() => {
       button.channel.setParent(CLAIMED);
       button.channel.overwritePermissions(permissions);
+
       const embedLog = new Discord.MessageEmbed()
         .addFields(
           { inline: false, name: 'Description', value: `📌 <@${button.clicker.user.id}> claimed a ticket 📌` },
@@ -96,37 +94,33 @@ module.exports = async (button, row, type, client) => {
         .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
         .setColor('#008CBA')
         .setFooter('ASAC Bot - tickets');
-      client.channels.fetch('856858334439145492').then((channel) => {
+      client.channels.fetch(TICKETS_LOG).then((channel) => {
         channel.send(embedLog);
       });
     }, 500);
 
   }
 
-  if (type === 'unclaim' && checkClaim(button.channel.id)) {
-    const claimer = checkClaim(button.channel.id);
+  if (type === 'unclaim' && isClaimed) {
 
+    const check = await ticketMethods.checkClaimer(button.clicker.user.id, button.channel.id);
     const roles = button.clicker.member._roles;
-    const isDev = roles.includes('856598723852238858');
-    // console.log(isDev);
-    if (claimer !== button.clicker.user.id && !isDev) {
-      // const notSupport = new Discord.MessageEmbed().setDescription(`Ticket already claimed <@${button.clicker.user.id}>`).setColor('#f44336');
+    const isDev = roles.includes(DEV_ROLE);
+
+    if (!check && !isDev) {
       const embed = new Discord.MessageEmbed().setDescription(`You can't claim a claimed ticket,
       
       please tag the dev role in the ticket if you need it to be unclaimed.
       `).setTitle('ASAC Tickets System').setColor('#ffc107');
       button.clicker.user.send(embed);
-      // button.channel.send(notSupport);
       return;
     }
-    const permissions = button.channel.permissionOverwrites;
 
-    // let name = button.channel.name;
-    // name = '📗' + name.slice(2, name.length - 2) + '📗';
-    //  button.channel.setName(name);
-    unClaimTicket(button.channel.id);
+    const permissions = button.channel.permissionOverwrites;
+    await ticketMethods.unClaimTicket(button.channel.id);
     claimingMessage(button, row, type);
     points.removePoint(button.clicker.user.id);
+
     setTimeout(() => {
       button.channel.setParent(QUEUE);
       button.channel.overwritePermissions(permissions);
@@ -138,7 +132,7 @@ module.exports = async (button, row, type, client) => {
         .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
         .setColor('#008CBA')
         .setFooter('ASAC Bot - tickets');
-      client.channels.fetch('856858334439145492').then((channel) => {
+      client.channels.fetch(TICKETS_LOG).then((channel) => {
         channel.send(embedLog);
       });
     }, 500);
