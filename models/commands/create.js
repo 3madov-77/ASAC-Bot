@@ -7,7 +7,7 @@ module.exports = {
   commands: ['c', 'create'],
   expectedArgs: 'cohortName @TA-Name @TA-Name ...',
   permissionError: 'You need instructor permissions to run this command',
-  minArgs: 1,
+  minArgs: 2,
   maxArgs: 10,
   callback: async (message, args, text, client) => {
     const guild = message.guild;
