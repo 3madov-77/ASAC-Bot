@@ -21,6 +21,7 @@ const QUEUE = process.env.QUEUE;
 const TA_ROLE = process.env.TA_ROLE;
 const DEV_ROLE = process.env.DEV_ROLE;
 const WAITING_ROOM = process.env.WAITING_ROOM;
+const TICKETS_LOG = process.env.TICKETS_LOG;
 const ticketsIDs = ['102', '201', '301', '401js', '401py', '401java', 'role'];
 
 let close = new MessageButton()
@@ -91,7 +92,7 @@ module.exports = async (client) => {
 
       const embed = new Discord.MessageEmbed().setDescription(`Support will be with you shortly.`).setTitle('ASAC Tickets System').setFooter('by Abdulhakim Zatar').setColor('#b006c6');
       const embedDesc = new Discord.MessageEmbed().setDescription(`<@${button.clicker.user.id}> Kindly add a description of your issue here`).setColor('#ffc107');
-      
+
       channel.send(`<@${button.clicker.user.id}> Welcome,
 
 How can we help you?
@@ -126,7 +127,7 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
         .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
         .setColor('#008CBA')
         .setFooter('ASAC Bot - tickets');
-      client.channels.fetch('856858334439145492').then((channel) => {
+      client.channels.fetch(TICKETS_LOG).then((channel) => {
         channel.send(embedLog);
       });
     }
@@ -140,20 +141,34 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
       clickHandler(button, row1, button.id, client);
     }
 
-    if (button.id === 'delete') {
-      clickHandler(button, null, button.id, client);
-    }
+    // if (button.id === 'delete') {
+    //   clickHandler(button, null, button.id, client);
+    // }
 
     if (button.id === 'close') {
       await button.clicker.fetch();
-      tickets = tickets.filter((userId) => {
-        return userId != button.clicker.user.id;
-      });
-      updateTickets(tickets);
+      const clickerRoles = button.clicker.member._roles;
+      const isDev = clickerRoles.includes(DEV_ROLE);
+
+      if (clickerRoles.includes(TA_ROLE) && !isDev) {
+        const check = await ticketMethods.checkClaimer(button.clicker.user.id, button.channel.id);
+
+        if (!check) {
+          const embed = new Discord.MessageEmbed().setDescription(`You can't close the ticket, you are not the claimer of it.
+          
+          `).setTitle('ASAC Tickets System').setColor('#ffc107');
+          console.log(button.clicker.user.name, 'tried to close ticket');
+          button.clicker.user.send(embed);
+          return;
+        }
+      }
+
       const oldEmbed = new Discord.MessageEmbed().setDescription(`Support will be with you shortly.`).setTitle('ASAC Tickets System').setFooter('by Abdulhakim Zatar').setColor('#b006c6');
-      button.message.edit(button.message.content, { oldEmbed, component: null });
       const embed = new Discord.MessageEmbed().setDescription(`Ticket closed by <@${button.clicker.user.id}>`).setColor('#f44336');
-      await button.channel.send(embed);
+
+      button.message.edit(button.message.content, { oldEmbed, component: null });
+      button.channel.send(embed);
+
       setTimeout(() => {
         button.channel.delete();
         const embedLog = new Discord.MessageEmbed()
@@ -167,35 +182,10 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
         client.channels.fetch('856858334439145492').then((channel) => {
           channel.send(embedLog);
         });
-      }, 2000);
-
-      // setTimeout(async () => {
-      //   button.channel.setParent(CLOSED);
-      //   setTimeout(async () => {
-      //     const embed = new Discord.MessageEmbed().setDescription(`The ticket is closed, you can delete or save it`).setColor('#ffc107');
-      //     await button.channel.send({ embed, component: row3 });
-
-      //     const embedLog = new Discord.MessageEmbed()
-      //       .addFields(
-      //         { inline: true, name: 'Description', value: `<@${button.clicker.user.id}> closed a ticket` },
-      //       )
-      //       .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
-      //       .setColor('#008CBA')
-      //       .setFooter('ASAC Bot - tickets');
-      //     client.channels.fetch('856858334439145492').then((channel) => {
-      //       channel.send(embedLog);
-      //     });
-      //   }, 1000);
-      // }, 2000);
-    }
-
-
-
-    if (button.id === 'save') {
-      button.channel.setParent(SAVED);
+        ticketMethods.closeTicket(button.channel.id);
+      }, 3000);
     }
   });
-  // TA_ROLE
 };
 
 //-----------------------------------------------------------------------------------------\\

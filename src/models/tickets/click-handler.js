@@ -1,47 +1,21 @@
 'use strict';
+
+//------------------------------// Third Party Resources \\----------------------------\\
 const Discord = require('discord.js');
 const fs = require('fs');
 require('dotenv').config();
+
+//---------------------------------// Import Resources \\-------------------------------\\
+const points = require('../points');
+
+//--------------------------------// Esoteric Resources \\-------------------------------\\
 const taRole = process.env.TA_ROLE;
 const instRole = process.env.INST_ROLE;
 const QUEUE = process.env.QUEUE;
 const CLAIMED = process.env.CLAIMED;
-const points = require('../points');
-let claimedTickets = [];
 const GUILD = process.env.GUILD;
 
-const getTickets = () => {
-  claimedTickets = JSON.parse(fs.readFileSync('tickets.json', 'utf-8'));
-};
-
-const updateTickets = (newClaimedTickets) => {
-  newClaimedTickets = JSON.stringify(newClaimedTickets);
-  fs.writeFileSync('tickets.json', newClaimedTickets, function (err) {
-    console.log(err.message);
-  });
-};
-
-const checkClaim = (channelID) => {
-  let flag = false;
-  let claimerID;
-  claimedTickets.forEach((ticket) => {
-    if (channelID == ticket.channelID) {
-      flag = true;
-      claimerID = ticket.claimerID;
-    }
-  });
-  return flag ? claimerID : false;
-};
-
-const claimTicket = (channelID, claimerID) => {
-  claimedTickets.push({ channelID, claimerID });
-  updateTickets(claimedTickets);
-};
-
-const unClaimTicket = (channelID) => {
-  claimedTickets = claimedTickets.filter((ticket) => ticket.channelID !== channelID);
-  updateTickets(claimedTickets);
-};
+//---------------------------------// Bot Loading \\-------------------------------\\
 
 const claimingMessage = async (button, row, type) => {
   const embedClaim = new Discord.MessageEmbed().setDescription(`Ticket ${type}ed by <@${button.clicker.user.id}>`).setColor(type === 'claim' ? '#4CAF50' : '#f44336');
@@ -170,3 +144,4 @@ module.exports = async (button, row, type, client) => {
     }, 500);
   }
 };
+//-----------------------------------------------------------------------------------------\\
