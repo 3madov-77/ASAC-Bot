@@ -79,19 +79,23 @@ module.exports = async (client) => {
         return;
       }
       const check = await ticketMethods.checkTicket(button.clicker.user.id);
-      
+
       if (check) {
         console.log(nickname, 'spam ticket');
         const embed = new Discord.MessageEmbed().setDescription(`You already have an open ticket.`).setTitle('ASAC Tickets System').setColor('#ffc107');
         button.clicker.user.send(embed);
         return;
       }
-      
+
       let guild = await client.guilds.fetch(GUILD);
       const channel = await createChannel(guild, `${button.id}-${nickname}`, QUEUE, button.clicker.user.id, 'text', button.clicker.user.id);
 
       const embed = new Discord.MessageEmbed().setDescription(`Support will be with you shortly.`).setTitle('ASAC Tickets System').setFooter('by Abdulhakim Zatar').setColor('#b006c6');
       const embedDesc = new Discord.MessageEmbed().setDescription(`<@${button.clicker.user.id}> Kindly add a description of your issue here`).setColor('#ffc107');
+      const embedTime = new Discord.MessageEmbed().setDescription(`<@${button.clicker.user.id}> You raised a ticket out of our working hours.
+      
+      You may not get the support fast.
+      `).setColor('#ffc107');
 
       channel.send(`<@${button.clicker.user.id}> Welcome,
 
@@ -103,9 +107,14 @@ Please write a description of your problem then do the following:
       
 One of our Teacher Assistants will join you as soon as possible.`, { embed, component: row1 });
 
+      const time = Date.now().getHours();
       setTimeout(async () => {
         channel.send(embedDesc);
+        if (time > 17 || time < 9) {
+          channel.send(embedTime);
+        }
       }, 1000);
+
 
       setTimeout(async () => {
         try {
