@@ -38,11 +38,11 @@ class Tickets {
 
   async unClaimTicket(channelId) {
     const SQL = `UPDATE tickets SET status=$2,claimer=$3 WHERE id=$1 AND status=$4;`;
-    const value = [channelId, 'open', null,'claimed'];
+    const value = [channelId, 'open', null, 'claimed'];
     await pg.query(SQL, value);
   }
 
-  async getTicket(channelId){
+  async getTicket(channelId) {
     const SQL = `SELECT * FROM tickets WHERE id=$1;`;
     const value = [channelId];
     const result = await pg.query(SQL, value);
@@ -57,8 +57,8 @@ class Tickets {
   }
 
   async addTicket(userId, channelId, name) {
-    const SQL = `INSERT INTO tickets(id,creator,name) VALUES($2,$1,$3)`;
-    const value = [userId, channelId, name];
+    const SQL = `INSERT INTO tickets(id,creator,name,opened) VALUES($2,$1,$3,$4)`;
+    const value = [userId, channelId, name, Date.now()];
     await pg.query(SQL, value);
   }
 
@@ -69,8 +69,8 @@ class Tickets {
   }
 
   async closeTicket(channelId) {
-    const SQL = `UPDATE tickets SET status=$2,closed=current_timestamp WHERE id=$1;`;
-    const value = [channelId, 'closed'];
+    const SQL = `UPDATE tickets SET status=$2,closed=$3 WHERE id=$1;`;
+    const value = [channelId, 'closed',Date.now()];
     await pg.query(SQL, value);
   }
 
