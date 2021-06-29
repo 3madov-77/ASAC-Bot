@@ -15,10 +15,10 @@ module.exports = async (client, name, categoryID, type, id) => {
         id,
         allow: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
       }, {
-        TA_ROLE,
+        id:TA_ROLE,
         allow: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
       }, {
-        INST_ROLE,
+        id:INST_ROLE,
         allow: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
       }],
   });
