@@ -28,7 +28,9 @@ module.exports = {
     today = mm + '/' + dd + '/' + yyyy;
 
     message.channel.send(today, { embed: embed1 });
-    message.channel.send({ embed: embed2 });
+    if(all.length>24){
+      message.channel.send({ embed: embed2 });
+    }
     message.delete();
   },
   permissions: [],
