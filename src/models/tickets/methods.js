@@ -42,6 +42,13 @@ class Tickets {
     await pg.query(SQL, value);
   }
 
+  async getTicket(channelId){
+    const SQL = `SELECT * FROM tickets WHERE id=$1;`;
+    const value = [channelId];
+    const result = await pg.query(SQL, value);
+    return result.rows[0];
+  }
+
   async checkClaimer(userId, channelId) {
     const SQL = `SELECT * FROM tickets WHERE id=$1;`;
     const value = [channelId];
@@ -62,7 +69,7 @@ class Tickets {
   }
 
   async closeTicket(channelId) {
-    const SQL = `UPDATE tickets SET status=$2 WHERE id=$1;`;
+    const SQL = `UPDATE tickets SET status=$2,closed=current_timestamp WHERE id=$1;`;
     const value = [channelId, 'closed'];
     await pg.query(SQL, value);
   }
