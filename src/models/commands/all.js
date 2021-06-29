@@ -18,7 +18,7 @@ module.exports = {
     all.forEach((user, index) => {
       let i = 0;
       index < 25 ? i = 0 : i = 1;
-      embeds[i].addField(`Rank: ${index + 1}`, `<@${user.userId}> has ${user.points} points.`);
+      embeds[i].addField(`Rank: ${index + 1}`, `<@${user.id}> has ${user.points} points.`);
       // embed.addField();
     });
     let today = new Date();

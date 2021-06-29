@@ -13,7 +13,7 @@ module.exports = {
     const top = await points.topPoints();
     const embed = new Discord.MessageEmbed().setTitle('ASAC Points System').setDescription(`Top 10 users.`).setFooter('by Abdulhakim Zatar').setColor('#b006c6');
     top.forEach((user, index) => {
-      embed.addField(`Rank: ${index + 1}`, `<@${user.userId}> has ${user.points} points.`);
+      embed.addField(`Rank: ${index + 1}`, `<@${user.id}> has ${user.points} points.`);
       // embed.addField();
     });
     message.reply('',{embed});

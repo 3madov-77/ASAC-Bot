@@ -5,7 +5,6 @@ const Discord = require('discord.js');
 const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
-require('discord-buttons')(client);
 
 //---------------------------------// Import Resources \\-------------------------------\\
 const tickets = require('./src/models/tickets');
@@ -17,6 +16,7 @@ const commandBase = require(`./src/models/commands/index.js`);
 const token = process.env.TOKEN;
 const client = new Discord.Client();
 const baseFile = 'index.js';
+require('discord-buttons')(client);
 
 //---------------------------------// Bot Loading \\-------------------------------\\
 
@@ -36,7 +36,7 @@ client.on('ready', async () => {
     }
   };
 
-  readCommands('models/commands');
+  readCommands('src/models/commands');
   tickets(client);
   roles(client);
 

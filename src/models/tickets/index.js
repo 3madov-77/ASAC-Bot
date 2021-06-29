@@ -16,6 +16,7 @@ const ticketMethods = require('./methods');
 const GUILD = process.env.GUILD;
 // const CLOSED = process.env.CLOSED;
 // const SAVED = process.env.SAVED;
+const STUDENT_ROLE = process.env.STUDENT_ROLE;
 const QUEUE = process.env.QUEUE;
 const TA_ROLE = process.env.TA_ROLE;
 const DEV_ROLE = process.env.DEV_ROLE;
@@ -78,7 +79,7 @@ module.exports = async (client) => {
         button.clicker.user.send(embed);
         return;
       }
-      const check = await ticketMethods.checkTicket(button.clicker.user.id);
+      let check = await ticketMethods.checkTicket(button.clicker.user.id);
 
       if (check) {
         console.log(nickname, 'spam ticket');
@@ -88,8 +89,24 @@ module.exports = async (client) => {
       }
 
       let guild = await client.guilds.fetch(GUILD);
-      const channel = await createChannel(guild, `${button.id}-${nickname}`, QUEUE, button.clicker.user.id, 'text', button.clicker.user.id);
+      const channel = await createChannel(guild, `${button.id}-${nickname}`, QUEUE, 'text', button.clicker.user.id);
+      await ticketMethods.addTicket(button.clicker.user.id, channel.id, `${button.id}-${nickname}`);
 
+      check = await ticketMethods.checkTicket2(button.clicker.user.id);
+
+      if (check) {
+        console.log(nickname, 'spam ticket');
+        const embed = new Discord.MessageEmbed().setDescription(`You already have an open ticket.`).setTitle('ASAC Tickets System').setColor('#ffc107');
+        button.clicker.user.send(embed);
+        // ticketMethods.closeTicket(channel.id);
+        ticketMethods.deleteTicket(channel.id);
+        channel.delete();
+        return;
+      }
+      // if (!result) {
+      //   console.log('?');
+      //   return;
+      // }
       const embed = new Discord.MessageEmbed().setDescription(`Support will be with you shortly.`).setTitle('ASAC Tickets System').setFooter('by Abdulhakim Zatar').setColor('#b006c6');
       const embedDesc = new Discord.MessageEmbed().setDescription(`<@${button.clicker.user.id}> Kindly add a description of your issue here`).setColor('#ffc107');
       const embedTime = new Discord.MessageEmbed().setDescription(`<@${button.clicker.user.id}> You raised a ticket out of our working hours.
@@ -107,7 +124,7 @@ Please write a description of your problem then do the following:
       
 One of our Teacher Assistants will join you as soon as possible.`, { embed, component: row1 });
 
-      const time = Date.now().getHours();
+      const time = new Date().getHours();
       setTimeout(async () => {
         channel.send(embedDesc);
         if (time > 17 || time < 9) {
@@ -125,7 +142,6 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
         }
       }, 3000);
 
-      ticketMethods.addTicket(button.clicker.user.id, `${button.id}-${nickname}`);
 
       const embedLog = new Discord.MessageEmbed()
         .addFields(
@@ -139,6 +155,29 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
       client.channels.fetch(TICKETS_LOG).then((channel) => {
         channel.send(embedLog);
       });
+
+      setTimeout(async () => {
+        const messages = await button.channel.messages.fetch({ limit: 100 });
+        let noStudentMessages = true;
+        messages.forEach(message => {
+          if (message.member.roles.cache.has(STUDENT_ROLE)) {
+            noStudentMessages = false;
+          }
+        });
+
+        if (noStudentMessages) {
+          ticketMethods.closeTicket(button.channel.id);
+          const embed = new Discord.MessageEmbed().setDescription(`<@${button.clicker.user.id}> ticket will close in 10 seconds because there is no description`).setColor('#f44336');
+          await channel.send(embed);
+          setTimeout(async () => {
+            try{
+              channel.delete();
+            }catch(err){
+              console.log('already deleted',channel.name);
+            }
+          }, 10000);
+        }
+      }, (5000 * 60 * 1));
     }
     // Create ticket end ------------------------------------------------------------------------------------------------
 
@@ -160,13 +199,12 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
       const isDev = clickerRoles.includes(DEV_ROLE);
 
       if (clickerRoles.includes(TA_ROLE) && !isDev) {
-        const check = await ticketMethods.checkClaimer(button.clicker.user.id, button.channel.id);
-
+        let check = await ticketMethods.checkClaimer(button.clicker.user.id, button.channel.id);
         if (!check) {
           const embed = new Discord.MessageEmbed().setDescription(`You can't close the ticket, you are not the claimer of it.
           
           `).setTitle('ASAC Tickets System').setColor('#ffc107');
-          console.log(button.clicker.user.name, 'tried to close ticket');
+          console.log(button.clicker.user.username, 'tried to close ticket');
           button.clicker.user.send(embed);
           return;
         }
@@ -178,20 +216,21 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
       button.message.edit(button.message.content, { oldEmbed, component: null });
       button.channel.send(embed);
 
-      setTimeout(() => {
+      setTimeout(async () => {
+        ticketMethods.closeTicket(button.channel.id);
         button.channel.delete();
         const embedLog = new Discord.MessageEmbed()
           .addFields(
             { inline: false, name: 'Description', value: `🔒 <@${button.clicker.user.id}> closed a ticket 🔒` },
             { inline: false, name: 'Ticket', value: button.channel.name },
           )
+
           .setAuthor(button.clicker.user.username, button.clicker.user.avatarURL())
           .setColor('#008CBA')
           .setFooter('ASAC Bot - tickets');
         client.channels.fetch('856858334439145492').then((channel) => {
           channel.send(embedLog);
         });
-        ticketMethods.closeTicket(button.channel.id);
       }, 3000);
     }
   });
