@@ -58,7 +58,7 @@ class Tickets {
 
   async addTicket(userId, channelId, name) {
     const SQL = `INSERT INTO tickets(id,creator,name,opened) VALUES($2,$1,$3,$4)`;
-    const value = [userId, channelId, name, (Date.now()/1000)];
+    const value = [userId, channelId, name, Math.floor(Date.now() / 1000)];
     await pg.query(SQL, value);
   }
 
@@ -70,7 +70,7 @@ class Tickets {
 
   async closeTicket(channelId) {
     const SQL = `UPDATE tickets SET status=$2,closed=$3 WHERE id=$1;`;
-    const value = [channelId, 'closed',(Date.now()/1000)];
+    const value = [channelId, 'closed', Math.floor(Date.now() / 1000)];
     await pg.query(SQL, value);
   }
 
