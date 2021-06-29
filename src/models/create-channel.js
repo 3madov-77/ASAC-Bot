@@ -1,4 +1,5 @@
 'use strict';
+require('dotenv').config();
 const TA_ROLE = process.env.TA_ROLE;
 const INST_ROLE = process.env.INST_ROLE;
 //---------------------------------// Create Channel \\-------------------------------\\
