@@ -167,7 +167,7 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
 
         if (noStudentMessages) {
           ticketMethods.closeTicket(button.channel.id);
-          const embed = new Discord.MessageEmbed().setDescription(`<@${button.clicker.user.id}> ticket will close in 10 seconds because there is no description`).setColor('#f44336');
+          const embed = new Discord.MessageEmbed().setDescription(`<@${button.clicker.user.id}> ticket will close in 15 seconds because there is no description`).setColor('#f44336');
           await channel.send(embed);
           setTimeout(async () => {
             try{
@@ -175,7 +175,7 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
             }catch(err){
               console.log('already deleted',channel.name);
             }
-          }, 10000);
+          }, 15000);
         }
       }, (5000 * 60 * 1));
     }
