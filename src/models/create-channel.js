@@ -5,10 +5,14 @@
 module.exports = async (client, name, categoryID, type, id) => {
   return client.channels.create(name, {
     type, parent: categoryID,
-    permissionOverwrites: [{
-      id,
-      allow: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
-    }],
+    permissionOverwrites: [
+      {
+        id: client.id,
+        deny: ['VIEW_CHANNEL'],
+      }, {
+        id,
+        allow: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
+      }],
   });
 };
 //-----------------------------------------------------------------------------------------\\
