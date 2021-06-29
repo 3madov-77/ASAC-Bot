@@ -10,7 +10,7 @@ module.exports = {
   minArgs: 1,
   maxArgs: 1,
   callback: async (message, args, text) => {
-    tickets.getTicket(args[0]);
+    console.log(tickets.getTicket(args[0]));
     // message.guild.roles.fetch();
     // const role = message.guild.roles.cache.get('856605767583137793')
     // console.log(role.members.members)
