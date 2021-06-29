@@ -109,6 +109,9 @@ module.exports = async (client) => {
       // }
       const embed = new Discord.MessageEmbed().setDescription(`Support will be with you shortly.`).setTitle('ASAC Tickets System').setFooter('by Abdulhakim Zatar').setColor('#b006c6');
       const embedDesc = new Discord.MessageEmbed().setDescription(`<@${button.clicker.user.id}> Kindly add a description of your issue here`).setColor('#ffc107');
+      const embedMeeting = new Discord.MessageEmbed().setDescription(`<@${button.clicker.user.id}> Please note all TA are currently in a meeting, so expect to get help later that usual.
+      
+      We will get back to you as soon as possible.`).setColor('#ffc107');
       const embedTime = new Discord.MessageEmbed().setDescription(`<@${button.clicker.user.id}> You raised a ticket out of our working hours.
       
       You may not get the support fast.
@@ -131,6 +134,10 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
           channel.send(embedTime);
         }
       }, 1000);
+
+      setTimeout(() => {
+        channel.send(embedMeeting);
+      }, 5000);
 
 
       setTimeout(async () => {
