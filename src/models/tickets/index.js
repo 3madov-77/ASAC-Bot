@@ -157,13 +157,17 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
       });
 
       setTimeout(async () => {
-        const messages = await channel.messages.fetch({ limit: 100 });
         let noStudentMessages = true;
-        messages.forEach(message => {
-          if (message.member.roles.cache.has(STUDENT_ROLE)) {
-            noStudentMessages = false;
-          }
-        });
+        try {
+          const messages = await channel.messages.fetch({ limit: 100 });
+          messages.forEach(message => {
+            if (message.member.roles.cache.has(STUDENT_ROLE)) {
+              noStudentMessages = false;
+            }
+          });
+        } catch (err) {
+          noStudentMessages = false;
+        }
         // const isClaimed = await ticketMethods.isClaimed(button.channel.id);
 
         if (noStudentMessages) {
