@@ -157,23 +157,24 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
       });
 
       setTimeout(async () => {
-        const messages = await button.channel.messages.fetch({ limit: 100 });
+        const messages = await channel.messages.fetch({ limit: 100 });
         let noStudentMessages = true;
         messages.forEach(message => {
           if (message.member.roles.cache.has(STUDENT_ROLE)) {
             noStudentMessages = false;
           }
         });
+        // const isClaimed = await ticketMethods.isClaimed(button.channel.id);
 
         if (noStudentMessages) {
           await ticketMethods.closeTicket(channel.id);
           const embed = new Discord.MessageEmbed().setDescription(`<@${button.clicker.user.id}> ticket will close in 15 seconds because there is no description`).setColor('#f44336');
           await channel.send(embed);
           setTimeout(async () => {
-            try{
+            try {
               channel.delete();
-            }catch(err){
-              console.log('already deleted',channel.name);
+            } catch (err) {
+              console.log('already deleted', channel.name);
             }
           }, 15000);
         }
