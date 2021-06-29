@@ -80,6 +80,13 @@ class Tickets {
     await pg.query(SQL, value);
   }
 
+  async haveTicket(userId) {
+    const SQL = `SELECT id FROM tickets WHERE id=$1 AND status=$2;`;
+    const value = [userId, 'claimed'];
+    const result = await pg.query(SQL, value);
+    return result.rows[0].length > 0 ? true : false;
+  }
+
 }
 
 
