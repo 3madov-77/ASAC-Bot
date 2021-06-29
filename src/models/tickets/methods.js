@@ -84,7 +84,7 @@ class Tickets {
     const SQL = `SELECT id FROM tickets WHERE id=$1 AND status=$2;`;
     const value = [userId, 'claimed'];
     const result = await pg.query(SQL, value);
-    return result.rows[0].length > 0 ? true : false;
+    return result.rows.length > 0 ? true : false;
   }
 
 }
