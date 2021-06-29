@@ -166,7 +166,7 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
         });
 
         if (noStudentMessages) {
-          ticketMethods.closeTicket(button.channel.id);
+          await ticketMethods.closeTicket(channel.id);
           const embed = new Discord.MessageEmbed().setDescription(`<@${button.clicker.user.id}> ticket will close in 15 seconds because there is no description`).setColor('#f44336');
           await channel.send(embed);
           setTimeout(async () => {
