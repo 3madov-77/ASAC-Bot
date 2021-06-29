@@ -1,5 +1,6 @@
 'use strict';
-
+const TA_ROLE = process.env.TA_ROLE;
+const INST_ROLE = process.env.INST_ROLE;
 //---------------------------------// Create Channel \\-------------------------------\\
 
 module.exports = async (client, name, categoryID, type, id) => {
@@ -11,6 +12,12 @@ module.exports = async (client, name, categoryID, type, id) => {
         deny: ['VIEW_CHANNEL'],
       }, {
         id,
+        allow: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
+      }, {
+        TA_ROLE,
+        allow: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
+      }, {
+        INST_ROLE,
         allow: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
       }],
   });
