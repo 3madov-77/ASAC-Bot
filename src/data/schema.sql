@@ -14,6 +14,6 @@ CREATE TABLE IF NOT EXISTS tickets (
   creator VARCHAR(255),
   claimer VARCHAR(255) DEFAULT NULL,
   status VARCHAR(255) DEFAULT 'open',
-  opened INT NOT NULL,
-  closed INT DEFAULT NULL
+  opened int8 NOT NULL,
+  closed int8 DEFAULT NULL
 );
