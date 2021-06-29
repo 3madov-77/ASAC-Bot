@@ -76,7 +76,11 @@ module.exports = async (button, row, type, client) => {
     const permissions = button.channel.permissionOverwrites;
 
     const claimTicket = await ticketMethods.claimTicket(button.clicker.user.id, button.channel.id);
-    if (!claimTicket) return;
+    if (!claimTicket) {
+      const embed = new Discord.MessageEmbed().setDescription(`You have another claimed ticket.`).setTitle('ASAC Tickets System').setColor('#ffc107');
+      button.clicker.user.send(embed);
+      return;
+    }
 
     claimingMessage(button, row, type);
     points.addPoint(button.clicker.user.id);
