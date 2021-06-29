@@ -130,7 +130,7 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
       const time = new Date().getHours();
       setTimeout(async () => {
         channel.send(embedDesc);
-        if (time > 17 || time < 9) {
+        if (time > 16 || time < 9) {
           channel.send(embedTime);
         }
       }, 1000);
