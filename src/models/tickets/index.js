@@ -135,9 +135,9 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
         }
       }, 1000);
 
-      setTimeout(() => {
-        channel.send(embedMeeting);
-      }, 5000);
+      // setTimeout(() => {
+      //   channel.send(embedMeeting);
+      // }, 5000);
 
 
       setTimeout(async () => {
