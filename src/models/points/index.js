@@ -15,8 +15,9 @@ class Points {
     return 0;
   }
 
-  async addUser(userId) {
-    const SQL = `INSERT INTO users(id) VALUES($1);`;
+  async addUser(userId, points) {
+    let SQL = `INSERT INTO users(id) VALUES($1);`;
+    if (points) SQL = `INSERT INTO users(id,points) VALUES($1,1);`;
     const value = [userId];
     await pg.query(SQL, value);
   }
@@ -25,7 +26,7 @@ class Points {
     const SQL = `UPDATE users SET points=points+1,last=current_timestamp WHERE id=$1 RETURNING id`;
     const value = [userId];
     const result = await pg.query(SQL, value);
-    if (result.rows.length == 0) this.addUser(userId);
+    if (result.rows.length == 0) this.addUser(userId, 1);
   }
 
   async removePoint(userId) {
