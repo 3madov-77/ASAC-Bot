@@ -81,7 +81,7 @@ class Tickets {
   }
 
   async haveTicket(userId) {
-    const SQL = `SELECT id FROM tickets WHERE calimer=$1 AND status=$2;`;
+    const SQL = `SELECT id FROM tickets WHERE claimer=$1 AND status=$2;`;
     const value = [userId, 'claimed'];
     const result = await pg.query(SQL, value);
     return result.rows.length > 0 ? true : false;
