@@ -139,7 +139,6 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
       //   channel.send(embedMeeting);
       // }, 5000);
 
-
       setTimeout(async () => {
         try {
           await guild.member(button.clicker.user.id).voice.setChannel(WAITING_ROOM);
