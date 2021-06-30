@@ -86,6 +86,16 @@ module.exports = async (button, row, type, client) => {
     claimingMessage(button, row, type);
     points.addPoint(button.clicker.user.id);
 
+    let inviteLink = await button.channel.createInvite();
+    inviteLink = inviteLink.toString();
+
+    const embed = new Discord.MessageEmbed().setDescription(`You have claimed a new ticket.
+    Click on the link below to open it.
+
+    **${inviteLink}**
+    `).setFooter(button.channel.name).setTitle('ASAC Tickets System').setColor('#4CAF50');
+    button.clicker.user.send(embed);
+
     setTimeout(() => {
       button.channel.setParent(CLAIMED);
       button.channel.overwritePermissions(permissions);
