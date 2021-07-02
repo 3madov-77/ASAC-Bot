@@ -1,9 +1,9 @@
 //------------------------------// Third Party Resources \\----------------------------\\
-const { GuildMemberManager } = require('discord.js');
+const { GuildMemberManager } = require("discord.js");
 //---------------------------------// Import Resources \\-------------------------------\\
-const pg = require('../database');
-const moment = require('moment');
-require('dotenv').config();
+const pg = require("../database");
+const moment = require("moment");
+require("dotenv").config();
 
 //--------------------------------// Esoteric Resources \\-------------------------------\\
 const GUILD = process.env.GUILD;
@@ -15,7 +15,6 @@ const MOCK = process.env.MOCK;
 
 //---------------------------------// Tickets Class \\-------------------------------\\
 class Dashboard {
-
   async getUsers(client) {
     const SQL = `SELECT * FROM users`;
     const results = await pg.query(SQL);
@@ -25,7 +24,6 @@ class Dashboard {
     const TAs = { available: [], inTicket: [], notAvailable: [], excused: [] };
     const discordServer = client.guilds.cache.get(GUILD);
     await discordServer.members.fetch();
-
 
     results.rows.forEach(async (user) => {
       const member = discordServer.members.cache.get(user.id);
@@ -47,12 +45,14 @@ class Dashboard {
       }
 
       if (member.voice.channel) {
-        if (member.voice.channel.name === '☕ Break ☕' || member.voice.channel.name === '🛑Currently not Available🛑') {
+        if (
+          member.voice.channel.name === "☕ Break ☕" ||
+          member.voice.channel.name === "🛑Currently not Available🛑"
+        ) {
           TAs.notAvailable.push(user);
           return;
         }
       }
-
     });
     return TAs;
   }
@@ -67,7 +67,7 @@ class Dashboard {
     const discordServer = client.guilds.cache.get(GUILD);
 
     const members = await discordServer.members.fetch();
-    members.forEach(member => {
+    members.forEach((member) => {
       if (member.roles.cache.has(TA_ROLE)) TAs++;
       if (member.roles.cache.has(STUDENT_ROLE)) students++;
     });
@@ -75,16 +75,53 @@ class Dashboard {
     return { tickets, TAs, students };
   }
 
-  async getHours() {
-    var timeStamp = new Date(Date.now());
-    var date = moment(timeStamp).format('MM/DD/YYYY HH:00:00');
-    function toTimestamp(strDate) {
-      var datum = Date.parse(strDate);
-      return datum / 1000;
-    }
-    console.log(toTimestamp(date));
+  toTimestamp(strDate) {
+    var datum = Date.parse(strDate);
+    return datum / 1000;
   }
 
+  async getHours() {
+    var timeStamp = new Date(Date.now());
+    var date = moment(timeStamp).add(1, "hour").format("MM/DD/YYYY HH:00:00");
+
+    // console.log(date, this.toTimestamp(date));
+    date = this.toTimestamp(date);
+
+    let startTime = date - 24 * 3600;
+    let endTime = date;
+
+    const sql = `SELECT opened FROM tickets WHERE opened BETWEEN $1 AND $2;`;
+    let values = [startTime, endTime];
+    console.log(values,'values')
+
+    let results = await pg.query(sql, values);
+    let ticketsIn24 = results.rows;
+    console.log(results.rows,'results.rows');
+    let ticketsPerHour = [];
+
+    for (let i = 0; i <= 23; i++) {
+      let from = startTime +( i * 3600);
+      let to = from + 3600;
+      console.log(from,to,i,'to');
+      let numOfTickets = 0;
+
+      ticketsIn24.forEach((ticket) => {
+        // console.log('ticket',from, ticket.opened)
+        if (ticket.opened < to && ticket.opened >= from) {
+          numOfTickets++;
+        }
+      });
+
+      var timeStamp = new Date((to*1000)-3600);
+      var date = moment(timeStamp).format("HH:00");
+      // console.log('date',date)
+      ticketsPerHour.push({hour:date,numOfTickets});
+
+
+
+    }
+    console.log(ticketsPerHour,'ticketsPerHour')
+  }
 }
 
 module.exports = new Dashboard();
