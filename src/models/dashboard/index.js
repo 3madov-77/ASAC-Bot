@@ -29,7 +29,7 @@ module.exports = async (client) => {
   });
 
   io.on('connection', (socket) => {
-    // console.log(socket.id);
+    console.log(socket.id);
     // console.log('===================');
     // socket.on('test',(payload)=>{
     //   console.log(payload);
