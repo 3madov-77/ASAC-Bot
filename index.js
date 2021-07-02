@@ -23,6 +23,7 @@ require('discord-buttons')(client);
 client.on('ready', async () => {
   await pg.connect();
 
+
   const readCommands = (dir) => {
     const files = fs.readdirSync(path.join(__dirname, dir));
     for (const file of files) {
@@ -50,3 +51,22 @@ client.on('ready', async () => {
 
 client.login(token);
 //-----------------------------------------------------------------------------------------\\
+
+const express = require('express');
+const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
+
+app.get('/', (req, res) => {
+  res.send('HELLO');
+});
+
+io.on('connection', (socket) => {
+  console.log('a user connected',socket.id);
+});
+
+server.listen(3001, () => {
+  console.log('listening on *:3001');
+});
