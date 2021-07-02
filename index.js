@@ -4,13 +4,16 @@
 const Discord = require('discord.js');
 const path = require('path');
 const fs = require('fs');
+
 require('dotenv').config();
+
 
 //---------------------------------// Import Resources \\-------------------------------\\
 const tickets = require('./src/models/tickets');
 const roles = require('./src/models/roles');
 const pg = require('./src/models/database');
 const commandBase = require(`./src/models/commands/index.js`);
+// const dashboard = ;
 
 //--------------------------------// Esoteric Resources \\-------------------------------\\
 const token = process.env.TOKEN;
@@ -22,7 +25,9 @@ require('discord-buttons')(client);
 
 client.on('ready', async () => {
   await pg.connect();
-
+  // const Guild = client.guilds.cache.get('856596909023166535');
+  // const Member = Guild.members.cache.get('223894785218445313');
+  // console.log(Guild.member(Member.user).displayName);
 
   const readCommands = (dir) => {
     const files = fs.readdirSync(path.join(__dirname, dir));
@@ -40,7 +45,8 @@ client.on('ready', async () => {
   readCommands('src/models/commands');
   tickets(client);
   roles(client);
-
+  // dashboard(client);
+  require(`./src/models/dashboard`)(client);
   client.user.setPresence({
     activity: {
       name: 'developed by Abdulhakim Zatar',
@@ -51,22 +57,3 @@ client.on('ready', async () => {
 
 client.login(token);
 //-----------------------------------------------------------------------------------------\\
-
-const express = require('express');
-const app = express();
-const http = require('http');
-const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server);
-
-app.get('/', (req, res) => {
-  res.send('HELLO');
-});
-
-io.on('connection', (socket) => {
-  console.log('a user connected',socket.id);
-});
-
-server.listen(3001, () => {
-  console.log('listening on *:3001');
-});

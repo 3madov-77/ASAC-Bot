@@ -14,6 +14,10 @@ CREATE TABLE IF NOT EXISTS tickets (
   creator VARCHAR(255),
   claimer VARCHAR(255) DEFAULT NULL,
   status VARCHAR(255) DEFAULT 'open',
-  opened int8 NOT NULL,
-  closed int8 DEFAULT NULL
+  opened int8 NOT NULL, -- 8:01am
+  claimed int8 NOT NULL, -- 8:05am
+  closed int8 DEFAULT NULL -- 8:20am
 );
+
+-- avg 4min waiting
+-- avg 15min on ticket
