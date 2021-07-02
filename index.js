@@ -13,11 +13,13 @@ const tickets = require('./src/models/tickets');
 const roles = require('./src/models/roles');
 const pg = require('./src/models/database');
 const commandBase = require(`./src/models/commands/index.js`);
-// const dashboard = ;
+const dashboard = require('./src/models/dashboard/methods');
 
 //--------------------------------// Esoteric Resources \\-------------------------------\\
 const token = process.env.TOKEN;
-const client = new Discord.Client();
+let intents = new Discord.Intents(Discord.Intents.NON_PRIVILEGED);
+intents.add('GUILD_MEMBERS');
+const client = new Discord.Client({ ws: {intents: intents} });
 const baseFile = 'index.js';
 require('discord-buttons')(client);
 
@@ -46,6 +48,7 @@ client.on('ready', async () => {
   tickets(client);
   roles(client);
   // dashboard(client);
+  // console.log(await dashboard.getTotals(client));
   require(`./src/models/dashboard`)(client);
   client.user.setPresence({
     activity: {

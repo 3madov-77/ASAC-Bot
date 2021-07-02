@@ -23,8 +23,8 @@ class Points {
   }
 
   async addPoint(userId) {
-    const SQL = `UPDATE users SET points=points+1,last=current_timestamp WHERE id=$1 RETURNING id`;
-    const value = [userId];
+    const SQL = `UPDATE users SET points=points+1,last=$2 WHERE id=$1 RETURNING id`;
+    const value = [userId, Math.floor(Date.now() / 1000)];
     const result = await pg.query(SQL, value);
     if (result.rows.length == 0) this.addUser(userId, 1);
   }

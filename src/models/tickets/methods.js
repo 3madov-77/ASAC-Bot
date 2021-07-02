@@ -30,15 +30,15 @@ class Tickets {
   }
 
   async claimTicket(userId, channelId) {
-    const SQL = `UPDATE tickets SET status=$2,claimer=$4 WHERE id=$1 AND status=$3 RETURNING id;`;
-    const value = [channelId, 'claimed', 'open', userId];
+    const SQL = `UPDATE tickets SET status=$2,claimer=$4,claimed=$5 WHERE id=$1 AND status=$3 RETURNING id;`;
+    const value = [channelId, 'claimed', 'open', userId, Math.floor(Date.now() / 1000)];
     const result = await pg.query(SQL, value);
     return result.rows.length > 0 ? true : false;
   }
 
   async unClaimTicket(channelId) {
-    const SQL = `UPDATE tickets SET status=$2,claimer=$3 WHERE id=$1 AND status=$4;`;
-    const value = [channelId, 'open', null, 'claimed'];
+    const SQL = `UPDATE tickets SET status=$2,claimer=$3,claimed=$5 WHERE id=$1 AND status=$4;`;
+    const value = [channelId, 'open', null, 'claimed',null];
     await pg.query(SQL, value);
   }
 
