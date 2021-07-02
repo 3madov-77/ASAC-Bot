@@ -48,7 +48,7 @@ client.on('ready', async () => {
   tickets(client);
   roles(client);
   // dashboard(client);
-  // console.log(await dashboard.getTotals(client));
+  await dashboard.getHours();
   require(`./src/models/dashboard`)(client);
   client.user.setPresence({
     activity: {

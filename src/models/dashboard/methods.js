@@ -2,6 +2,7 @@
 const { GuildMemberManager } = require('discord.js');
 //---------------------------------// Import Resources \\-------------------------------\\
 const pg = require('../database');
+const moment = require('moment');
 require('dotenv').config();
 
 //--------------------------------// Esoteric Resources \\-------------------------------\\
@@ -71,7 +72,17 @@ class Dashboard {
       if (member.roles.cache.has(STUDENT_ROLE)) students++;
     });
 
-    return {tickets,TAs,students};
+    return { tickets, TAs, students };
+  }
+
+  async getHours() {
+    var timeStamp = new Date(Date.now());
+    var date = moment(timeStamp).format('MM/DD/YYYY HH:00:00');
+    function toTimestamp(strDate) {
+      var datum = Date.parse(strDate);
+      return datum / 1000;
+    }
+    console.log(toTimestamp(date));
   }
 
 }
