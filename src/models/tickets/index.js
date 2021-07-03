@@ -11,6 +11,8 @@ const createChannel = require('../create-channel');
 const getNickname = require('../get-nickname');
 const clickHandler = require('./click-handler');
 const ticketMethods = require('./methods');
+const { io } = require('../dashboard/index');
+const methods = require('../dashboard/methods');
 
 //--------------------------------// Esoteric Resources \\-------------------------------\\
 const GUILD = process.env.GUILD;
@@ -161,7 +163,8 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
       client.channels.fetch(TICKETS_LOG).then((channel) => {
         channel.send(embedLog);
       });
-
+      // emit to dashboard
+      io.emit('createTicket' , {totals : await methods.getTotals(client) , chart : await methods.getHours() ,dailyTicketsLevels : await methods.dailyTicketsLevels() ,dailyTicketsInfo : await methods.dailyTicketsInfo() , average : await methods.average()  });
       setTimeout(async () => {
         let noStudentMessages = true;
         try {
@@ -243,6 +246,7 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
           channel.send(embedLog);
         });
       }, 3000);
+      io.emit('claimUnclaimCloseTicket',{  dailyTicketsInfo : await methods.dailyTicketsInfo() ,users :  await methods.getUsers(client) ,average :  await methods.average()});
     }
   });
 };

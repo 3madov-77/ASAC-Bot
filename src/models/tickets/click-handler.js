@@ -7,7 +7,8 @@ require('dotenv').config();
 //---------------------------------// Import Resources \\-------------------------------\\
 const points = require('../points');
 const ticketMethods = require('./methods');
-
+const { io } = require('../dashboard/index');
+const methods = require('../dashboard/methods');
 //--------------------------------// Esoteric Resources \\-------------------------------\\
 const taRole = process.env.TA_ROLE;
 const instRole = process.env.INST_ROLE;
@@ -58,7 +59,6 @@ module.exports = async (button, row, type, client) => {
   const isClaimed = await ticketMethods.isClaimed(button.channel.id);
 
   if (type === 'claim' && !isClaimed) {
-
     const messages = await button.channel.messages.fetch({ limit: 100 });
     let noStudentMessages = true;
     messages.forEach(message => {
@@ -113,7 +113,7 @@ module.exports = async (button, row, type, client) => {
         channel.send(embedLog);
       });
     }, 500);
-
+    io.emit('claimUnclaimCloseTicket',{  dailyTicketsInfo : await methods.dailyTicketsInfo() ,users :  await methods.getUsers(client) ,average :  await methods.average()});
   }
 
   if (type === 'unclaim' && isClaimed) {
@@ -151,6 +151,7 @@ module.exports = async (button, row, type, client) => {
         channel.send(embedLog);
       });
     }, 500);
+    io.emit('claimUnclaimCloseTicket',{  dailyTicketsInfo : await methods.dailyTicketsInfo() ,users :  await methods.getUsers(client) ,average :  await methods.average()});
   }
 };
 //-----------------------------------------------------------------------------------------\\
