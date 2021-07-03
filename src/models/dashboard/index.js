@@ -16,7 +16,7 @@ const cors = require('cors');
 
 //--------------------------------// Esoteric Resources \\-------------------------------\\
 const server = http.createServer(app);
-const io = socketIo(server , {
+const io = socketIo(server, {
   cors: {
     origin: '*',
   },
@@ -27,7 +27,7 @@ app.use(express.json());
 //---------------------------------// Bot Loading \\-------------------------------\\
 
 const startServer = (client) => {
-  
+
   app.get('/all', async (req, res) => {
     res.json({ total: await methods.getTotals(client), users: await methods.getUsers(client), dailyTicketsInfo: await methods.dailyTicketsInfo(), average: await methods.average(), dailyTicketsLevels: await methods.dailyTicketsLevels() });
   });
@@ -59,14 +59,11 @@ const startServer = (client) => {
   });
 
   client.on('voiceStateUpdate', async (oldMember, newMember) => {
-    const rooms = ['☕ Break ☕', '🛑Currently not Available🛑'];
-    if (newMember.channel || oldMember.channel) {
-
-      if (
-        rooms.includes(newMember.channel.name) || rooms.includes(oldMember.channel.name)
-      ) {
-        io.emit('changeRoom', { users: await methods.getUsers(client) });
-      }
+    const rooms = ['857312945339891712', '859032754531598356'];
+    if (
+      rooms.includes(newMember.channelID ) || rooms.includes(oldMember.channelID)
+    ) {
+      io.emit('changeRoom', { users: await methods.getUsers(client) });
     }
   });
 
