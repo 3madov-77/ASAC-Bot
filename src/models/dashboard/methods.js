@@ -76,13 +76,13 @@ class Dashboard {
   }
 
   toTimestamp(strDate) {
-    var datum = Date.parse(strDate);
+    let datum = Date.parse(strDate);
     return datum / 1000;
   }
 
   async getHours() {
-    var timeStamp = new Date(Date.now());
-    var date = moment(timeStamp).add(1, "hour").format("MM/DD/YYYY HH:00:00");
+    let timeStamp = new Date(Date.now());
+    let date = moment(timeStamp).add(1, 'hour').format('MM/DD/YYYY HH:00:00');
 
     // console.log(date, this.toTimestamp(date));
     date = this.toTimestamp(date);
@@ -92,17 +92,17 @@ class Dashboard {
 
     const sql = `SELECT opened FROM tickets WHERE opened BETWEEN $1 AND $2;`;
     let values = [startTime, endTime];
-    console.log(values,'values')
+    console.log(values, 'values');
 
     let results = await pg.query(sql, values);
     let ticketsIn24 = results.rows;
-    console.log(results.rows,'results.rows');
+    console.log(results.rows, 'results.rows');
     let ticketsPerHour = [];
 
     for (let i = 0; i <= 23; i++) {
-      let from = startTime +( i * 3600);
+      let from = startTime + (i * 3600);
       let to = from + 3600;
-      console.log(from,to,i,'to');
+      console.log(from, to, i, 'to');
       let numOfTickets = 0;
 
       ticketsIn24.forEach((ticket) => {
@@ -112,15 +112,15 @@ class Dashboard {
         }
       });
 
-      var timeStamp = new Date((to*1000)-3600);
-      var date = moment(timeStamp).format("HH:00");
+      timeStamp = new Date((to * 1000) - 3600);
+      date = moment(timeStamp).format('HH:00');
       // console.log('date',date)
-      ticketsPerHour.push({hour:date,numOfTickets});
+      ticketsPerHour.push({ hour: date, numOfTickets });
 
 
 
     }
-    console.log(ticketsPerHour,'ticketsPerHour')
+    return ticketsPerHour;
   }
 }
 
