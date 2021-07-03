@@ -16,7 +16,7 @@ const MOCK = process.env.MOCK;
 //---------------------------------// Tickets Class \\-------------------------------\\
 class Dashboard {
   async getUsers(client) {
-    const SQL = `SELECT * FROM users`;
+    const SQL = `SELECT * FROM users ORDER BY points DESC `;
     const results = await pg.query(SQL);
     const SQL2 = `SELECT claimer FROM tickets WHERE status='claimed';`;
     const results2 = await pg.query(SQL2);
@@ -28,7 +28,7 @@ class Dashboard {
 
       const member = discordServer.members.cache.get(user.id);
       const name = discordServer.member(member.user).displayName;
-      user = { id: user.id, name, points: user.points, last: user.last };
+      user = { id: user.id, name, points: user.points, last: user.last, avatar: member.user.avatarURL() };
       if (tickets.includes(user.id)) {
         TAs.inTicket.push(user);
         return;
@@ -187,27 +187,27 @@ class Dashboard {
       // console.log(level, 'level');
 
       switch (level) {
-      case '102':
-        ticketsIn24Obj['102']++;
-        break;
-      case '201':
-        ticketsIn24Obj['201']++;
-        break;
-      case '301':
-        ticketsIn24Obj['301']++;
-        break;
-      case '401js':
-        ticketsIn24Obj['401js']++;
-        break;
-      case '401java':
-        ticketsIn24Obj['401java']++;
-        break;
-      case '401py':
-        ticketsIn24Obj['401py']++;
-        break;
+        case '102':
+          ticketsIn24Obj['102']++;
+          break;
+        case '201':
+          ticketsIn24Obj['201']++;
+          break;
+        case '301':
+          ticketsIn24Obj['301']++;
+          break;
+        case '401js':
+          ticketsIn24Obj['401js']++;
+          break;
+        case '401java':
+          ticketsIn24Obj['401java']++;
+          break;
+        case '401py':
+          ticketsIn24Obj['401py']++;
+          break;
 
-      default:
-        break;
+        default:
+          break;
       }
     });
     // console.log(ticketsIn24Obj);
@@ -258,10 +258,10 @@ class Dashboard {
     avgTicketsPerStudent = avgTicketsPerStudent / results2.rows.length;
     return { avgClaimed, avgOpened, avgTicketsPerStudent };
   }
-  
-  taState(){
 
-    
+  taState() {
+
+
   }
 
 }

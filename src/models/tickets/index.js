@@ -231,7 +231,7 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
       button.channel.send(embed);
 
       setTimeout(async () => {
-        ticketMethods.closeTicket(button.channel.id);
+        await ticketMethods.closeTicket(button.channel.id);
         button.channel.delete();
         const embedLog = new Discord.MessageEmbed()
           .addFields(
@@ -245,8 +245,8 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
         client.channels.fetch('856858334439145492').then((channel) => {
           channel.send(embedLog);
         });
+        io.emit('claimUnclaimCloseTicket',{  dailyTicketsInfo : await methods.dailyTicketsInfo() ,users :  await methods.getUsers(client) ,average :  await methods.average()});
       }, 3000);
-      io.emit('claimUnclaimCloseTicket',{  dailyTicketsInfo : await methods.dailyTicketsInfo() ,users :  await methods.getUsers(client) ,average :  await methods.average()});
     }
   });
 };
