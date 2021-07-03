@@ -64,7 +64,7 @@ class Dashboard {
     const results = await pg.query(SQL);
     let students = 0;
     let TAs = 0;
-    const tickets = results.rows[0].count;
+    const tickets = Number(results.rows[0].count);
 
     const discordServer = client.guilds.cache.get(GUILD);
 
@@ -94,17 +94,17 @@ class Dashboard {
 
     const sql = `SELECT opened FROM tickets WHERE opened BETWEEN $1 AND $2;`;
     let values = [startTime, endTime];
-    console.log(values, 'values');
+    // console.log(values, 'values');
 
     let results = await pg.query(sql, values);
     let ticketsIn24 = results.rows;
-    console.log(results.rows, 'results.rows');
+    // console.log(results.rows, 'results.rows');
     let ticketsPerHour = [];
 
     for (let i = 0; i <= 23; i++) {
       let from = startTime + i * 3600;
       let to = from + 3600;
-      console.log(from, to, i, 'to');
+      // console.log(from, to, i, 'to');
       let numOfTickets = 0;
 
       ticketsIn24.forEach((ticket) => {
@@ -134,7 +134,7 @@ class Dashboard {
 
     const sql = `SELECT status, count(*) FROM tickets WHERE opened BETWEEN $1 AND $2 GROUP BY status;`;
     let values = [startTime, endTime];
-    console.log(values, 'values');
+    // console.log(values, 'values');
 
     let results = await pg.query(sql, values);
     let ticketsIn24 = results.rows;
@@ -142,15 +142,15 @@ class Dashboard {
 
     ticketsIn24.forEach((ticket) => {
       if (ticket.status === 'open') {
-        ticketsIn24Obj.opened = ticket.count;
+        ticketsIn24Obj.opened = Number(ticket.count);
       }
 
       if (ticket.status === 'closed') {
-        ticketsIn24Obj.closed = ticket.count;
+        ticketsIn24Obj.closed = Number(ticket.count);
       }
 
       if (ticket.status === 'claimed') {
-        ticketsIn24Obj.claimed = ticket.count;
+        ticketsIn24Obj.claimed = Number(ticket.count);
       }
     });
     //  console.log('ticketsIn24Obj',ticketsIn24Obj)
@@ -184,7 +184,7 @@ class Dashboard {
     ticketsIn24.forEach((ticket) => {
       let level = ticket.name.split('-')[0];
 
-      console.log(level, 'level');
+      // console.log(level, 'level');
 
       switch (level) {
       case '102':
@@ -230,7 +230,7 @@ class Dashboard {
     let results = await pg.query(sql, values);
     let ticketsIn24 = results.rows;
 
-    console.log(ticketsIn24, 'ticketsIn24');
+    // console.log(ticketsIn24, 'ticketsIn24');
 
     let avgOpened = 0,
       avgClaimed = 0,
@@ -249,7 +249,7 @@ class Dashboard {
 
     const sql2 = `SELECT COUNT(creator) FROM tickets WHERE opened BETWEEN $1 AND $2 GROUP BY creator;`;
     let results2 = await pg.query(sql2, values);
-    console.log(results2.rows);
+    // console.log(results2.rows);
 
     let avgTicketsPerStudent = 0;
     results2.rows.forEach((ticket) => {
