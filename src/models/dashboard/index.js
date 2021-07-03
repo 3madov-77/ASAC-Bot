@@ -11,6 +11,7 @@ const { Server } = require('socket.io');
 const express = require('express');
 const app = express();
 const http = require('http');
+const methods = require('./methods');
 
 //--------------------------------// Esoteric Resources \\-------------------------------\\
 const GUILD = process.env.GUILD;
@@ -20,7 +21,7 @@ const server = http.createServer(app);
 const io = new Server(server);
 //---------------------------------// Bot Loading \\-------------------------------\\
 
-module.exports = async (client) => {
+const startServer =  (client) => {
   app.get('/', (req, res) => {
     res.send('HELLO');
   });
@@ -28,10 +29,40 @@ module.exports = async (client) => {
     console.log('listening on *:3030');
   });
 
-  io.on('connection', (socket) => {
+  client.on('guildMemberUpdate', (oldMember, newMember) => {
+    if (oldMember.roles.cache.size > newMember.roles.cache.size) {
 
+      oldMember.roles.cache.forEach(async role => {
+        if (!newMember.roles.cache.has(role.id)) {
+          console.log('removed');
+          // methods
+          
+          io.emit('changeRole' , { total : await methods.getTotals(client) , users : await methods.getUsers(client)});
+        }
+      });
+
+    } else if (oldMember.roles.cache.size < newMember.roles.cache.size) {
+        
+      newMember.roles.cache.forEach(async role => {
+        if (!oldMember.roles.cache.has(role.id)) {
+          console.log('added');
+          io.emit('changeRole' , { total : await methods.getTotals(client) , users : await methods.getUsers(client)});
+        }
+      });
+    }
   });
+
+  client.on('voiceStateUpdate',async (oldMember, newMember)=>{
+    const rooms = ['☕ Break ☕' , '🛑Currently not Available🛑']
+    if (
+      rooms.includes(newMember.channel.name)   || rooms.includes(oldMember.channel.name) 
+    ) {
+      io.emit('changeRoom' , {users : await methods.getUsers(client)});
+    }
+  });
+
 
 };
 
+module.exports = {startServer , io};
 //-----------------------------------------------------------------------------------------\\

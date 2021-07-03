@@ -1,9 +1,9 @@
 //------------------------------// Third Party Resources \\----------------------------\\
-const { GuildMemberManager } = require("discord.js");
+const { GuildMemberManager } = require('discord.js');
 //---------------------------------// Import Resources \\-------------------------------\\
-const pg = require("../database");
-const moment = require("moment");
-require("dotenv").config();
+const pg = require('../database');
+const moment = require('moment');
+require('dotenv').config();
 
 //--------------------------------// Esoteric Resources \\-------------------------------\\
 const GUILD = process.env.GUILD;
@@ -24,8 +24,8 @@ class Dashboard {
     const TAs = { available: [], inTicket: [], notAvailable: [], excused: [] };
     const discordServer = client.guilds.cache.get(GUILD);
     await discordServer.members.fetch();
-
     results.rows.forEach(async (user) => {
+
       const member = discordServer.members.cache.get(user.id);
       const name = discordServer.member(member.user).displayName;
       user = { id: user.id, name, points: user.points, last: user.last };
@@ -46,13 +46,15 @@ class Dashboard {
 
       if (member.voice.channel) {
         if (
-          member.voice.channel.name === "☕ Break ☕" ||
-          member.voice.channel.name === "🛑Currently not Available🛑"
+          member.voice.channel.name === '☕ Break ☕' ||
+          member.voice.channel.name === '🛑Currently not Available🛑'
         ) {
           TAs.notAvailable.push(user);
           return;
         }
       }
+      TAs.available.push(user);
+
     });
     return TAs;
   }
@@ -82,7 +84,7 @@ class Dashboard {
 
   async getHours() {
     let timeStamp = new Date(Date.now());
-    let date = moment(timeStamp).add(1, "hour").format("MM/DD/YYYY HH:00:00");
+    let date = moment(timeStamp).add(1, 'hour').format('MM/DD/YYYY HH:00:00');
 
     // console.log(date, this.toTimestamp(date));
     date = this.toTimestamp(date);
@@ -92,17 +94,17 @@ class Dashboard {
 
     const sql = `SELECT opened FROM tickets WHERE opened BETWEEN $1 AND $2;`;
     let values = [startTime, endTime];
-    console.log(values, "values");
+    console.log(values, 'values');
 
     let results = await pg.query(sql, values);
     let ticketsIn24 = results.rows;
-    console.log(results.rows, "results.rows");
+    console.log(results.rows, 'results.rows');
     let ticketsPerHour = [];
 
     for (let i = 0; i <= 23; i++) {
       let from = startTime + i * 3600;
       let to = from + 3600;
-      console.log(from, to, i, "to");
+      console.log(from, to, i, 'to');
       let numOfTickets = 0;
 
       ticketsIn24.forEach((ticket) => {
@@ -113,7 +115,7 @@ class Dashboard {
       });
 
       timeStamp = new Date(to * 1000 - 3600);
-      date = moment(timeStamp).format("HH:00");
+      date = moment(timeStamp).format('HH:00');
       // console.log('date',date)
       ticketsPerHour.push({ hour: date, numOfTickets });
     }
@@ -122,7 +124,7 @@ class Dashboard {
 
   async dailyTicketsInfo() {
     let timeStamp = new Date(Date.now());
-    let date = moment(timeStamp).format("MM/DD/YYYY HH:59:59");
+    let date = moment(timeStamp).format('MM/DD/YYYY HH:59:59');
 
     // console.log(date, this.toTimestamp(date));
     date = this.toTimestamp(date);
@@ -132,22 +134,22 @@ class Dashboard {
 
     const sql = `SELECT status, count(*) FROM tickets WHERE opened BETWEEN $1 AND $2 GROUP BY status;`;
     let values = [startTime, endTime];
-    console.log(values, "values");
+    console.log(values, 'values');
 
     let results = await pg.query(sql, values);
     let ticketsIn24 = results.rows;
     let ticketsIn24Obj = { opened: 0, closed: 0, claimed: 0 };
 
     ticketsIn24.forEach((ticket) => {
-      if (ticket.status === "open") {
+      if (ticket.status === 'open') {
         ticketsIn24Obj.opened = ticket.count;
       }
 
-      if (ticket.status === "closed") {
+      if (ticket.status === 'closed') {
         ticketsIn24Obj.closed = ticket.count;
       }
 
-      if (ticket.status === "claimed") {
+      if (ticket.status === 'claimed') {
         ticketsIn24Obj.claimed = ticket.count;
       }
     });
@@ -157,7 +159,7 @@ class Dashboard {
 
   async dailyTicketsLevels() {
     let timeStamp = new Date(Date.now());
-    let date = moment(timeStamp).format("MM/DD/YYYY HH:59:59");
+    let date = moment(timeStamp).format('MM/DD/YYYY HH:59:59');
 
     // console.log(date, this.toTimestamp(date));
     date = this.toTimestamp(date);
@@ -171,50 +173,50 @@ class Dashboard {
     let results = await pg.query(sql, values);
     let ticketsIn24 = results.rows;
     let ticketsIn24Obj = {
-      102: 0,
-      201: 0,
-      301: 0,
-      "401js": 0,
-      "401java": 0,
-      "401py": 0,
+      '102': 0,
+      '201': 0,
+      '301': 0,
+      '401js': 0,
+      '401java': 0,
+      '401py': 0,
     };
 
     ticketsIn24.forEach((ticket) => {
-      let level = ticket.name.split("-")[0];
+      let level = ticket.name.split('-')[0];
 
-      console.log(level, "level");
+      console.log(level, 'level');
 
       switch (level) {
-        case "102":
-          ticketsIn24Obj["102"]++;
-          break;
-        case "201":
-          ticketsIn24Obj["201"]++;
-          break;
-        case "301":
-          ticketsIn24Obj["301"]++;
-          break;
-        case "401js":
-          ticketsIn24Obj["401js"]++;
-          break;
-        case "401java":
-          ticketsIn24Obj["401java"]++;
-          break;
-        case "401py":
-          ticketsIn24Obj["401py"]++;
-          break;
+      case '102':
+        ticketsIn24Obj['102']++;
+        break;
+      case '201':
+        ticketsIn24Obj['201']++;
+        break;
+      case '301':
+        ticketsIn24Obj['301']++;
+        break;
+      case '401js':
+        ticketsIn24Obj['401js']++;
+        break;
+      case '401java':
+        ticketsIn24Obj['401java']++;
+        break;
+      case '401py':
+        ticketsIn24Obj['401py']++;
+        break;
 
-        default:
-          break;
+      default:
+        break;
       }
     });
     // console.log(ticketsIn24Obj);
     return ticketsIn24Obj;
   }
 
-  async avgerage() {
+  async average() {
     let timeStamp = new Date(Date.now());
-    let date = moment(timeStamp).format("MM/DD/YYYY HH:59:59");
+    let date = moment(timeStamp).format('MM/DD/YYYY HH:59:59');
 
     // console.log(date, this.toTimestamp(date));
     date = this.toTimestamp(date);
@@ -228,7 +230,7 @@ class Dashboard {
     let results = await pg.query(sql, values);
     let ticketsIn24 = results.rows;
 
-    console.log(ticketsIn24, "ticketsIn24");
+    console.log(ticketsIn24, 'ticketsIn24');
 
     let avgOpened = 0,
       avgClaimed = 0,
@@ -256,6 +258,12 @@ class Dashboard {
     avgTicketsPerStudent = avgTicketsPerStudent / results2.rows.length;
     return { avgClaimed, avgOpened, avgTicketsPerStudent };
   }
+  
+  taState(){
+
+    
+  }
+
 }
 
 module.exports = new Dashboard();

@@ -13,7 +13,8 @@ const tickets = require('./src/models/tickets');
 const roles = require('./src/models/roles');
 const pg = require('./src/models/database');
 const commandBase = require(`./src/models/commands/index.js`);
-const dashboard = require('./src/models/dashboard/methods');
+// const dashboard = require('./src/models/dashboard/methods');
+const {startServer} = require('./src/models/dashboard');
 
 //--------------------------------// Esoteric Resources \\-------------------------------\\
 const token = process.env.TOKEN;
@@ -30,7 +31,6 @@ client.on('ready', async () => {
   // const Guild = client.guilds.cache.get('856596909023166535');
   // const Member = Guild.members.cache.get('223894785218445313');
   // console.log(Guild.member(Member.user).displayName);
-
   const readCommands = (dir) => {
     const files = fs.readdirSync(path.join(__dirname, dir));
     for (const file of files) {
@@ -47,9 +47,9 @@ client.on('ready', async () => {
   readCommands('src/models/commands');
   tickets(client);
   roles(client);
-  // dashboard(client);
-  await dashboard.avgerage();
-  require(`./src/models/dashboard`)(client);
+  startServer(client);
+  // await dashboard.avgerage();
+  // require(`./src/models/dashboard`)(client);
   client.user.setPresence({
     activity: {
       name: 'developed by Abdulhakim Zatar',
@@ -57,6 +57,8 @@ client.on('ready', async () => {
     },
   });
 });
+
+
 
 client.login(token);
 //-----------------------------------------------------------------------------------------\\
