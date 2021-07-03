@@ -136,25 +136,80 @@ class Dashboard {
 
     let results = await pg.query(sql, values);
     let ticketsIn24 = results.rows;
-   let ticketsIn24Obj = {opened:0,closed:0,claimed:0}
+    let ticketsIn24Obj = { opened: 0, closed: 0, claimed: 0 };
 
-   ticketsIn24.forEach((ticket)=>{
-   
-   if(ticket.status==='open'){
-    ticketsIn24Obj.opened= ticket.count
-   }
+    ticketsIn24.forEach((ticket) => {
+      if (ticket.status === "open") {
+        ticketsIn24Obj.opened = ticket.count;
+      }
 
-   if(ticket.status==='closed'){
-    ticketsIn24Obj.closed= ticket.count
-   }
+      if (ticket.status === "closed") {
+        ticketsIn24Obj.closed = ticket.count;
+      }
 
-   if(ticket.status==='claimed'){
-    ticketsIn24Obj.claimed= ticket.count
-   }
+      if (ticket.status === "claimed") {
+        ticketsIn24Obj.claimed = ticket.count;
+      }
+    });
+    //  console.log('ticketsIn24Obj',ticketsIn24Obj)
+    return ticketsIn24Obj;
+  }
 
-   })
-  //  console.log('ticketsIn24Obj',ticketsIn24Obj)
-   return ticketsIn24Obj
+  async dailyTicketsLevels() {
+    let timeStamp = new Date(Date.now());
+    let date = moment(timeStamp).format("MM/DD/YYYY HH:59:59");
+
+    // console.log(date, this.toTimestamp(date));
+    date = this.toTimestamp(date);
+
+    let startTime = date - 24 * 3600;
+    let endTime = date;
+
+    const sql = `SELECT name FROM tickets WHERE opened BETWEEN $1 AND $2;`;
+    let values = [startTime, endTime];
+
+    let results = await pg.query(sql, values);
+    let ticketsIn24 = results.rows;
+    let ticketsIn24Obj = {
+      '102': 0,
+      '201': 0,
+      '301': 0,
+      "401js": 0,
+      "401java": 0,
+      "401py": 0,
+    };
+
+    ticketsIn24.forEach((ticket) => {
+      let level = ticket.name.split("-")[0];
+
+      console.log(level, "level");
+
+      switch (level) {
+        case '102':
+          ticketsIn24Obj['102']++;
+          break;
+        case '201':
+          ticketsIn24Obj['201']++;
+          break;
+        case '301':
+          ticketsIn24Obj['301']++;
+          break;
+        case "401js":
+          ticketsIn24Obj["401js"]++;
+          break;
+        case "401java":
+          ticketsIn24Obj["401java"]++;
+          break;
+        case "401py":
+          ticketsIn24Obj["401py"]++;
+          break;
+
+        default:
+          break;
+      }
+    });
+    // console.log(ticketsIn24Obj);
+    return ticketsIn24Obj;
   }
 }
 

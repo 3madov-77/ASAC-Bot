@@ -48,7 +48,7 @@ client.on('ready', async () => {
   tickets(client);
   roles(client);
   // dashboard(client);
-  await dashboard.dailyTicketsInfo();
+  await dashboard.dailyTicketsLevels();
   require(`./src/models/dashboard`)(client);
   client.user.setPresence({
     activity: {
