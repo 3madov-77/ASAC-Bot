@@ -127,7 +127,7 @@ class Dashboard {
     // console.log(date, this.toTimestamp(date));
     date = this.toTimestamp(date);
 
-    let startTime = date - 24 * 3600;
+    let startTime = date - 12 * 3600;
     let endTime = date;
 
     const sql = `SELECT status, count(*) FROM tickets WHERE opened BETWEEN $1 AND $2 GROUP BY status;`;
@@ -162,7 +162,7 @@ class Dashboard {
     // console.log(date, this.toTimestamp(date));
     date = this.toTimestamp(date);
 
-    let startTime = date - 24 * 3600;
+    let startTime = date - 12 * 3600;
     let endTime = date;
 
     const sql = `SELECT name FROM tickets WHERE opened BETWEEN $1 AND $2;`;
@@ -171,9 +171,9 @@ class Dashboard {
     let results = await pg.query(sql, values);
     let ticketsIn24 = results.rows;
     let ticketsIn24Obj = {
-      '102': 0,
-      '201': 0,
-      '301': 0,
+      102: 0,
+      201: 0,
+      301: 0,
       "401js": 0,
       "401java": 0,
       "401py": 0,
@@ -185,14 +185,14 @@ class Dashboard {
       console.log(level, "level");
 
       switch (level) {
-        case '102':
-          ticketsIn24Obj['102']++;
+        case "102":
+          ticketsIn24Obj["102"]++;
           break;
-        case '201':
-          ticketsIn24Obj['201']++;
+        case "201":
+          ticketsIn24Obj["201"]++;
           break;
-        case '301':
-          ticketsIn24Obj['301']++;
+        case "301":
+          ticketsIn24Obj["301"]++;
           break;
         case "401js":
           ticketsIn24Obj["401js"]++;
@@ -210,6 +210,51 @@ class Dashboard {
     });
     // console.log(ticketsIn24Obj);
     return ticketsIn24Obj;
+  }
+
+  async avgerage() {
+    let timeStamp = new Date(Date.now());
+    let date = moment(timeStamp).format("MM/DD/YYYY HH:59:59");
+
+    // console.log(date, this.toTimestamp(date));
+    date = this.toTimestamp(date);
+
+    let startTime = date - 12 * 3600;
+    let endTime = date;
+
+    const sql = `SELECT opened, claimed, closed FROM tickets WHERE claimed IS NOT NULL AND opened BETWEEN $1 AND $2;`;
+    let values = [startTime, endTime];
+
+    let results = await pg.query(sql, values);
+    let ticketsIn24 = results.rows;
+
+    console.log(ticketsIn24, "ticketsIn24");
+
+    let avgOpened = 0,
+      avgClaimed = 0,
+      ticketClosed = 0;
+
+    ticketsIn24.forEach((ticket) => {
+      if (ticket.closed && ticket.claimed) {
+        ticketClosed++;
+        avgClaimed += ticket.closed - ticket.claimed;
+      }
+      avgOpened += ticket.claimed - ticket.opened;
+    });
+    avgClaimed = avgClaimed / ticketClosed;
+
+    avgOpened = avgOpened / ticketsIn24.length;
+
+    const sql2 = `SELECT COUNT(creator) FROM tickets WHERE opened BETWEEN $1 AND $2 GROUP BY creator;`;
+    let results2 = await pg.query(sql2, values);
+    console.log(results2.rows);
+
+    let avgTicketsPerStudent = 0;
+    results2.rows.forEach((ticket) => {
+      avgTicketsPerStudent += Number(ticket.count);
+    });
+    avgTicketsPerStudent = avgTicketsPerStudent / results2.rows.length;
+    return { avgClaimed, avgOpened, avgTicketsPerStudent };
   }
 }
 
