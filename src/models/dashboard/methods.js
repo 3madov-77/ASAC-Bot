@@ -187,27 +187,27 @@ class Dashboard {
       // console.log(level, 'level');
 
       switch (level) {
-        case '102':
-          ticketsIn24Obj['102']++;
-          break;
-        case '201':
-          ticketsIn24Obj['201']++;
-          break;
-        case '301':
-          ticketsIn24Obj['301']++;
-          break;
-        case '401js':
-          ticketsIn24Obj['401js']++;
-          break;
-        case '401java':
-          ticketsIn24Obj['401java']++;
-          break;
-        case '401py':
-          ticketsIn24Obj['401py']++;
-          break;
+      case '102':
+        ticketsIn24Obj['102']++;
+        break;
+      case '201':
+        ticketsIn24Obj['201']++;
+        break;
+      case '301':
+        ticketsIn24Obj['301']++;
+        break;
+      case '401js':
+        ticketsIn24Obj['401js']++;
+        break;
+      case '401java':
+        ticketsIn24Obj['401java']++;
+        break;
+      case '401py':
+        ticketsIn24Obj['401py']++;
+        break;
 
-        default:
-          break;
+      default:
+        break;
       }
     });
     // console.log(ticketsIn24Obj);
