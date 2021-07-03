@@ -82,7 +82,7 @@ class Dashboard {
 
   async getHours() {
     let timeStamp = new Date(Date.now());
-    let date = moment(timeStamp).add(1, 'hour').format('MM/DD/YYYY HH:00:00');
+    let date = moment(timeStamp).add(1, "hour").format("MM/DD/YYYY HH:00:00");
 
     // console.log(date, this.toTimestamp(date));
     date = this.toTimestamp(date);
@@ -92,17 +92,17 @@ class Dashboard {
 
     const sql = `SELECT opened FROM tickets WHERE opened BETWEEN $1 AND $2;`;
     let values = [startTime, endTime];
-    console.log(values, 'values');
+    console.log(values, "values");
 
     let results = await pg.query(sql, values);
     let ticketsIn24 = results.rows;
-    console.log(results.rows, 'results.rows');
+    console.log(results.rows, "results.rows");
     let ticketsPerHour = [];
 
     for (let i = 0; i <= 23; i++) {
-      let from = startTime + (i * 3600);
+      let from = startTime + i * 3600;
       let to = from + 3600;
-      console.log(from, to, i, 'to');
+      console.log(from, to, i, "to");
       let numOfTickets = 0;
 
       ticketsIn24.forEach((ticket) => {
@@ -112,15 +112,49 @@ class Dashboard {
         }
       });
 
-      timeStamp = new Date((to * 1000) - 3600);
-      date = moment(timeStamp).format('HH:00');
+      timeStamp = new Date(to * 1000 - 3600);
+      date = moment(timeStamp).format("HH:00");
       // console.log('date',date)
       ticketsPerHour.push({ hour: date, numOfTickets });
-
-
-
     }
     return ticketsPerHour;
+  }
+
+  async dailyTicketsInfo() {
+    let timeStamp = new Date(Date.now());
+    let date = moment(timeStamp).format("MM/DD/YYYY HH:59:59");
+
+    // console.log(date, this.toTimestamp(date));
+    date = this.toTimestamp(date);
+
+    let startTime = date - 24 * 3600;
+    let endTime = date;
+
+    const sql = `SELECT status, count(*) FROM tickets WHERE opened BETWEEN $1 AND $2 GROUP BY status;`;
+    let values = [startTime, endTime];
+    console.log(values, "values");
+
+    let results = await pg.query(sql, values);
+    let ticketsIn24 = results.rows;
+   let ticketsIn24Obj = {opened:0,closed:0,claimed:0}
+
+   ticketsIn24.forEach((ticket)=>{
+   
+   if(ticket.status==='open'){
+    ticketsIn24Obj.opened= ticket.count
+   }
+
+   if(ticket.status==='closed'){
+    ticketsIn24Obj.closed= ticket.count
+   }
+
+   if(ticket.status==='claimed'){
+    ticketsIn24Obj.claimed= ticket.count
+   }
+
+   })
+  //  console.log('ticketsIn24Obj',ticketsIn24Obj)
+   return ticketsIn24Obj
   }
 }
 
