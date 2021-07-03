@@ -48,7 +48,7 @@ client.on('ready', async () => {
   tickets(client);
   roles(client);
   // dashboard(client);
-  await dashboard.dailyTicketsLevels();
+  await dashboard.avgerage();
   require(`./src/models/dashboard`)(client);
   client.user.setPresence({
     activity: {
