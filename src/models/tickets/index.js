@@ -164,7 +164,7 @@ One of our Teacher Assistants will join you as soon as possible.`, { embed, comp
         channel.send(embedLog);
       });
       // emit to dashboard
-      io.emit('createTicket' , {totals : await methods.getTotals(client) , chart : await methods.getHours() ,dailyTicketsLevels : await methods.dailyTicketsLevels() ,dailyTicketsInfo : await methods.dailyTicketsInfo() , average : await methods.average()  });
+      io.emit('createTicket' , {total : await methods.getTotals(client) , chart : await methods.getHours() ,dailyTicketsLevels : await methods.dailyTicketsLevels() ,dailyTicketsInfo : await methods.dailyTicketsInfo() , average : await methods.average()  });
       setTimeout(async () => {
         let noStudentMessages = true;
         try {
