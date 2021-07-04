@@ -29,7 +29,7 @@ app.use(express.json());
 const startServer = (client) => {
 
   app.get('/all', async (req, res) => {
-    res.json({ total: await methods.getTotals(client), users: await methods.getUsers(client), dailyTicketsInfo: await methods.dailyTicketsInfo(), average: await methods.average(), dailyTicketsLevels: await methods.dailyTicketsLevels() });
+    res.json({ chart : await methods.getHours(), total: await methods.getTotals(client), users: await methods.getUsers(client), dailyTicketsInfo: await methods.dailyTicketsInfo(), average: await methods.average(), dailyTicketsLevels: await methods.dailyTicketsLevels() });
   });
   server.listen(process.env.PORT || 3030, () => {
     console.log('listening on *:3030');
