@@ -115,7 +115,7 @@ class Dashboard {
       });
 
       timeStamp = new Date(to * 1000 - 3600);
-      date = moment(timeStamp).add(1,'hour').format('HH:00');
+      date = moment(timeStamp).format('HH:00');
       // console.log('date',date)
       ticketsPerHour.push({ hour: date, numOfTickets });
     }
