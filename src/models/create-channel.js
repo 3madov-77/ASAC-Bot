@@ -13,13 +13,13 @@ module.exports = async (client, name, categoryID, type, id) => {
         deny: ['VIEW_CHANNEL'],
       }, {
         id,
-        allow: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
+        allow: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'MANAGE_CHANNELS'],
       }, {
-        id:TA_ROLE,
-        allow: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
+        id: TA_ROLE,
+        allow: ['VIEW_CHANNEL', 'SEND_MESSAGES','MANAGE_CHANNELS'],
       }, {
-        id:INST_ROLE,
-        allow: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
+        id: INST_ROLE,
+        allow: ['VIEW_CHANNEL', 'SEND_MESSAGES','MANAGE_CHANNELS'],
       }],
   });
 };
