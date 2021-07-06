@@ -81,8 +81,9 @@ module.exports = async (button, row, type, client) => {
       button.clicker.user.send(embed);
       return;
     }
-    await ticketMethods.claimTicket(button.clicker.user.id, button.channel.id);
-
+    const check = await ticketMethods.claimTicket(button.clicker.user.id, button.channel.id);
+    if (!check) return;
+    
     claimingMessage(button, row, type);
     points.addPoint(button.clicker.user.id);
 
@@ -113,7 +114,7 @@ module.exports = async (button, row, type, client) => {
         channel.send(embedLog);
       });
     }, 500);
-    io.emit('claimUnclaimCloseTicket',{  dailyTicketsInfo : await methods.dailyTicketsInfo() ,users :  await methods.getUsers(client) ,average :  await methods.average()});
+    io.emit('claimUnclaimCloseTicket', { dailyTicketsInfo: await methods.dailyTicketsInfo(), users: await methods.getUsers(client), average: await methods.average() });
   }
 
   if (type === 'unclaim' && isClaimed) {
@@ -151,7 +152,7 @@ module.exports = async (button, row, type, client) => {
         channel.send(embedLog);
       });
     }, 500);
-    io.emit('claimUnclaimCloseTicket',{  dailyTicketsInfo : await methods.dailyTicketsInfo() ,users :  await methods.getUsers(client) ,average :  await methods.average()});
+    io.emit('claimUnclaimCloseTicket', { dailyTicketsInfo: await methods.dailyTicketsInfo(), users: await methods.getUsers(client), average: await methods.average() });
   }
 };
 //-----------------------------------------------------------------------------------------\\
