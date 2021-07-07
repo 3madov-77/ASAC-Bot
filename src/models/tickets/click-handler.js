@@ -61,14 +61,31 @@ module.exports = async (button, row, type, client) => {
   if (type === 'claim' && !isClaimed) {
     const messages = await button.channel.messages.fetch({ limit: 100 });
     let noStudentMessages = true;
+    let TAEdicated = true;
     messages.forEach(message => {
       if (message.member.roles.cache.has(STUDENT_ROLE)) {
         noStudentMessages = false;
+
+        if(message.mentions.users.first()){ // cheack if message have mention
+          if(button.guild.members.cache.get(mess.mentions.users.first().id)._roles.includes(taRole)){ // check if mention is for TA
+            if(mess.mentions.users.first().id == button.clicker.user.id){ // cheack if clicker is the same mentioned TA
+              TAEdicated = false;
+            }
+          }
+        }
+
       }
     });
 
     if (noStudentMessages) {
       const embed = new Discord.MessageEmbed().setDescription(`You can't claim the ticket because there is no description from the student`).setTitle('ASAC Tickets System').setColor('#ffc107');
+      button.clicker.user.send(embed);
+      return;
+    }
+
+    ///////////////////\\\ Ticket is only 4 specific TA ///\\\\\\\\\\\\\\\\\\\
+    if (TAEdicated){
+      const embed = new Discord.MessageEmbed().setDescription(`You can't claim the ticket because it dedicated for other TA`).setTitle('ASAC Tickets System').setColor('#f44336');
       button.clicker.user.send(embed);
       return;
     }
