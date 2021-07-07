@@ -67,8 +67,8 @@ module.exports = async (button, row, type, client) => {
         noStudentMessages = false;
 
         if(message.mentions.users.first()){ // cheack if message have mention
-          if(button.guild.members.cache.get(mess.mentions.users.first().id)._roles.includes(taRole)){ // check if mention is for TA
-            if(mess.mentions.users.first().id == button.clicker.user.id){ // cheack if clicker is the same mentioned TA
+          if(button.guild.members.cache.get(message.mentions.users.first().id)._roles.includes(taRole)){ // check if mention is for TA
+            if(message.mentions.users.first().id == button.clicker.user.id){ // cheack if clicker is the same mentioned TA
               TAEdicated = false;
             }
           }
