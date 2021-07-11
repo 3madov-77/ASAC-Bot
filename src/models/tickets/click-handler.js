@@ -68,14 +68,17 @@ module.exports = async (button, row, type, client) => {
 
         if(message.mentions){
           if(message.mentions.users.first()){ // cheack if message have mention
-            if(button.guild.members.cache.get(message.mentions.users.first().id)._roles.includes(taRole)){ // check if mention is for TA
-              tAEdicated = true;
-              if(message.mentions.users.first().id == button.clicker.user.id){ // cheack if clicker is the same mentioned TA
-                tAEdicated = false;
+            message.mentions.users.each(mention =>{
+              if(button.guild.members.cache.get(mention.id)._roles.includes(taRole)){ // check if mention is for TA
+                tAEdicated = true;
+                if(mention.id == button.clicker.user.id){ // cheack if clicker is the same mentioned TA
+                  tAEdicated = false;
+                }
               }
-            }
+            })
           }
         }
+        
       }
     });
 
